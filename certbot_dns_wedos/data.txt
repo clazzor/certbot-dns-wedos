@@ -1,5 +1,0 @@
-Saving debug log to /var/log/letsencrypt/letsencrypt.log
-Requesting a certificate for *.clazzor.eu
-data: clazzor.eu -> _acme-challenge.clazzor.eu
-Key: kn5cbGyQ_60EtiQ4B3PPfamBDIG0hTE8vTvlgJRsCtA
-Waiting 10 seconds for DNS changes to propagate
