@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import logging, requests, json, hashlib, time
+import requests, logging, json, hashlib, time
 from datetime import datetime
 from certbot.plugins.dns_common import DNSAuthenticator
 from certbot import errors
