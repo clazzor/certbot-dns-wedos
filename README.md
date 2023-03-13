@@ -1,5 +1,5 @@
 # CertBot DNS plugin
-This plugin uses [certbot](https://github.com/certbot/certbot)'s [dns-01 challenge](https://letsencrypt.org/docs/challenge-types/) to create and delete TXT records on a [Wedos](https://www.wedos.com/) domain server, thanks to the API interface called [WAPI](https://kb.wedos.com/en/kategorie/wapi-api-interface/) provided by [Wedos](https://www.wedos.com/).
+This plugin uses [certbot](https://github.com/certbot/certbot)'s [dns-01 challenge](https://letsencrypt.org/docs/challenge-types/) to create and delete TXT records on a [Wedos](https://www.wedos.com/) domain server, thanks to the API interface called [WAPI](https://kb.wedos.com/en/kategorie/wapi-api-interface/) provided by [Wedos](https://www.wedos.com/). With this plugin you can make [wildcard](https://en.wikipedia.org/wiki/Wildcard_DNS_record/) [ssl](https://letsencrypt.org/docs/faq/#does-let-s-encrypt-issue-wildcard-certificates/). 
 
 ## Installation
 ### Prerequirements
@@ -60,6 +60,7 @@ rm -r wedos.zip wedos
 ### Configuration file INI
 ### Arguments
 ### Example
+certbot certonly -d *.example.eu -d example.eu --authenticator dns-wedos
 
 ## Used Modules/Libraries
 I just want to mention which modules/libraries this plugin uses for better debugging of errors in the future, in case any occur.
@@ -76,5 +77,5 @@ I just want to mention which modules/libraries this plugin uses for better debug
 
 ## Errors
 If an error occurs, Certbot will display the type of error that has occurred.  
-If it is an error related to communication between the plugin and WAPI, you will receive a [return code](https://en.wikipedia.org/wiki/Exit_status). Wedos has a list of error codes on their Czech website, which you can access through this [link](https://kb.wedos.com/cs/wapi-api-rozhrani/zakladni-informace-wapi-api-rozhrani/wapi-seznam-navratovych-kodu/). _(If you do not speak Czech, you can use [Google Translate](https://kb-wedos-com.translate.goog/cs/wapi-api-rozhrani/zakladni-informace-wapi-api-rozhrani/wapi-seznam-navratovych-kodu/?_x_tr_sl=en&_x_tr_tl=cs&_x_tr_hl=cs&_x_tr_pto=wapp) :D)_
+If it is an error related to communication between the plugin and WAPI, you will receive a [return code](https://en.wikipedia.org/wiki/Exit_status/). Wedos has a list of error codes on their Czech website, which you can access through this [link](https://kb.wedos.com/cs/wapi-api-rozhrani/zakladni-informace-wapi-api-rozhrani/wapi-seznam-navratovych-kodu/). _(If you do not speak Czech, you can use [Google Translate](https://kb-wedos-com.translate.goog/cs/wapi-api-rozhrani/zakladni-informace-wapi-api-rozhrani/wapi-seznam-navratovych-kodu/?_x_tr_sl=cs&_x_tr_tl=en) :D)_
 
