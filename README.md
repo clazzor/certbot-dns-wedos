@@ -65,15 +65,16 @@ certbot certonly -d *.example.eu -d example.eu --authenticator dns-wedos
 ## Used Modules/Libraries
 I just want to mention which modules/libraries this plugin uses for better debugging of errors in the future, in case any occur.
 
-| Name                                                                     | License                                                          |
-|:------------------------------------------------------------------------:|:----------------------------------------------------------------:|
-| [setuptools](https://github.com/pypa/setuptools)                         | [MIT](https://github.com/pypa/setuptools/blob/main/LICENSE/)     |
-| [requests](https://github.com/psf/requests)                              | [Apache 2.0](https://github.com/psf/requests/blob/main/LICENSE/) |
-| [logging](https://github.com/python/cpython/tree/main/Lib/logging)       | [PSF](https://github.com/python/cpython/blob/main/LICENSE/)      |
-| [json](https://github.com/python/cpython/tree/3.11/Lib/json)             | [PSF](https://github.com/python/cpython/blob/main/LICENSE/)      |
-| [haslib](https://github.com/python/cpython/blob/3.11/Lib/hashlib.py)     | [PSF](https://github.com/python/cpython/blob/main/LICENSE/)      |
-| [time](https://github.com/python/cpython/blob/main/Modules/timemodule.c) | [PSF](https://github.com/python/cpython/blob/main/LICENSE/)      |
-| [datetime](https://github.com/python/cpython/blob/3.11/Lib/datetime.py)  | [PSF](https://github.com/python/cpython/blob/main/LICENSE/)      |
+| Name                                                                        | License                                                          |
+|:---------------------------------------------------------------------------:|:----------------------------------------------------------------:|
+| [setuptools](https://github.com/pypa/setuptools)                            | [MIT](https://github.com/pypa/setuptools/blob/main/LICENSE/)     |
+| [requests](https://github.com/psf/requests)                                 | [Apache 2.0](https://github.com/psf/requests/blob/main/LICENSE/) |
+| [subprocess](https://github.com/python/cpython/blob/3.11/Lib/subprocess.py) | [PSF](https://github.com/python/cpython/blob/main/LICENSE/)      |
+| [logging](https://github.com/python/cpython/tree/main/Lib/logging)          | [PSF](https://github.com/python/cpython/blob/main/LICENSE/)      |
+| [haslib](https://github.com/python/cpython/blob/3.11/Lib/hashlib.py)        | [PSF](https://github.com/python/cpython/blob/main/LICENSE/)      |
+| [shelx](https://github.com/python/cpython/blob/3.11/Lib/shlex.py)           | [PSF](https://github.com/python/cpython/blob/main/LICENSE/)      |
+| [json](https://github.com/python/cpython/tree/3.11/Lib/json)                | [PSF](https://github.com/python/cpython/blob/main/LICENSE/)      |
+| [time](https://github.com/python/cpython/blob/main/Modules/timemodule.c)    | [PSF](https://github.com/python/cpython/blob/main/LICENSE/)      |
 
 ## Errors
 If an error occurs, Certbot will display the type of error that has occurred.  

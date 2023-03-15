@@ -1,11 +1,16 @@
-#!/usr/bin/python3
-
-import requests, logging, json, hashlib, time
-from datetime import datetime
-from certbot.plugins.dns_common import DNSAuthenticator
+#import requests, subprocess, logging, hashlib, shlex, json, time
+#from datetime import datetime
+from requests import Session, post
+from subprocess import run, PIPE
+from logging import getLogger
+from hashlib import sha1
+from shlex import split
+from json import dumps
+from time import strftime, localtime, sleep
+from certbot.plugins.dns_common import DNSAuthenticator, validate_file_permissions
 from certbot import errors
-logger = logging.getLogger(__name__)
 
+logger = getLogger(__name__)
 URL = "https://api.wedos.com/wapi/json"
 TTL = 300
 
@@ -16,38 +21,15 @@ class _WedosClient():
         self.username = username
         self.password = password
         self.ttl = TTL
-        self.session = requests.Session()
+        self.session = Session()
 
-
-    def _getHour() -> str:
+    """
+    def _getHour(self) -> str:
         time = str(datetime.now().hour)
         if len(time) == 1: time = "0" + time
         return time
-
-
-    def _clientConnect(self, command: str, params: dict = None) -> requests.post:
-        time = str(datetime.now().hour)
-        if len(time) == 1: time = "0" + time
-
-        auth = (self.username + self.password + time ).encode("ascii")
-        data = {
-            "user": self.username,
-            "auth": hashlib.sha1(auth).hexdigest(),
-            "command": command
-            }
-
-        if type(params) is dict: data.update({"data": params})
-        data = json.dumps({"request": data})
-        response = self.session.post(self.url, data={'request': data})
-
-        if not response.ok:
-            raise errors.PluginError(f"Cannot access Api Wedos, HTTP error code is {response.status_code}")
-
-        if response.json()["response"]["code"] >= 2000:
-            raise errors.PluginError(f"Error code received from Wedos, code is {response.json()['response']['code']}")
-
-        return response
-
+    """
+    
     def _findID(self, data: dict, key: str) -> int:
         ID = -1
         try:
@@ -60,6 +42,30 @@ class _WedosClient():
             return ID
 
 
+    def _clientConnect(self, command: str, params: dict = None, debug: str = "") -> post:
+        logger.debug(debug)
+        auth = (self.username + self.password + strftime('%H', localtime())).encode("ascii")
+        #auth = (self.username + self.password + self._getHour()).encode("ascii")
+        
+        data = {
+            "user": self.username,
+            "auth": sha1(auth).hexdigest(),
+            "command": command
+            }
+
+        if type(params) is dict: data.update({"data": params})
+        data = dumps({"request": data})
+        response = self.session.post(self.url, data={'request': data})
+
+        if not response.ok:
+            raise errors.PluginError(f"Cannot access Api Wedos, HTTP error code is {response.status_code}")
+
+        if response.json()["response"]["code"] >= 2000:
+            raise errors.PluginError(f"Error code received from Wedos, code is {response.json()['response']['code']}")
+
+        return response
+
+
     def add_txt_record(self, domain: str, validation_name: str, validation: str) -> None:
         if any(arg is None for arg in [domain, validation_name, validation]):
             raise errors.Error("Missing important component, this is error from Certbot, not from plugin")
@@ -70,64 +76,95 @@ class _WedosClient():
                   "ttl": self.ttl,
                   "rdata": validation}
 
-        logger.debug("Creating TXT record ..")
-        self._clientConnect("dns-row-add", record)
-        logger.debug("TXT Record was created!")
-        self._clientConnect("dns-domain-commit", {"name": domain})
+        self._clientConnect("dns-row-add", record, "Creating TXT record ..")
+        self._clientConnect("dns-domain-commit", {"name": domain}, "TXT Record was created!")
         logger.debug("Changes was commit on Wedos")
 
     def del_txt_record(self, domain: str, validation_name: str, validation: str) -> None:
         if any(arg is None for arg in [domain, validation_name, validation]):
             raise errors.Error("Missing important component, this is error from Certbot, not from plugin")
 
-        logger.debug("Finding ID of TXT record ..")
-        response = self._clientConnect("dns-rows-list", {"domain": domain})
+        response = self._clientConnect("dns-rows-list", {"domain": domain}, "Finding ID of TXT record ..")
         id = self._findID(response.json()["response"],  validation)
         if id == -1:
             logger.warn("Couldn't find created TXT record, is recommended to check it.")
             return
 
-        logger.debug("Deleting created TXT record ..")
-        self._clientConnect("dns-row-delete", {"domain": domain, "row_id": id})
-        logger.debug("TXT record was deleted!")
-        self._clientConnect("dns-domain-commit", {"name": domain})
+        self._clientConnect("dns-row-delete", {"domain": domain, "row_id": id}, "Deleting created TXT record ..")
+        self._clientConnect("dns-domain-commit", {"name": domain}, "TXT record was deleted!")
         logger.debug("Changes was commit on Wedos")
 
 
-
 class Authenticator(DNSAuthenticator):
+
     description = "Obtain certificates for Wedos dns servers."
 
     def __init__(self, *args: any, **kwargs: any) -> None:
         super(Authenticator, self).__init__(*args, **kwargs)
         self.credentials = None
+        self.arguments = {}
+
+        for arg in ["credentials", "user", "auth", "finalize"]:
+            if self.conf(arg): self.arguments[arg] = self.conf(arg)
+            else: self.arguments[arg] = None
+
+
+    @classmethod
+    def add_parser_arguments(cls, add: callable) -> None:
+        super(Authenticator, cls).add_parser_arguments(add, default_propagation_seconds=30)
+        add("credentials", help="Wedos credentials INI file.")
+        add("user", help="User for Wedos API. (Overwrite INI file)")
+        add("auth", help="SHA1 Auth (Password) for Wedos API. (Overwrite INI file)")
+        add("finalize", help="Path or command that will run after everything is done. (Overwrite INI file)")
+
 
     def more_info(self) -> str:
-        return "This plugin configure a DNS TXT record to respond to a dns-01 challenge using the Hostpoint API"
+        return "This plugin uses certbot's dns-01 challenge to create and delete TXT records\
+                on a Wedos domain server, thanks to the API interface called WAPI provided by Wedos.\
+                With this plugin, you can make wildcard ssl."
 
-    def prepare(self) -> None:
-        logger.debug("Starting ..")
+    def _get_credentials(self) -> None:
+        self._configure_file('credentials', "Wedos credentials INI file.")
+        validate_file_permissions(self.arguments["credentials"])
 
-    def _setup_credentials(self) -> None:
         self.credentials = self._configure_credentials(
             "credentials",
-            "Wedos credentials INI file",
+            "Wedos credentials INI file.",
             {
-                "username": "Username for Wedos API.",
-                "password": "Password for Wedos API.",
+                "user": "User for Wedos API.",
+                "auth": "SHA1 Auth (Password) for Wedos API.",
             },
         )
 
+    def _setup_credentials(self) -> None:
+        if self.arguments["credentials"]: self._get_credentials()
+
+        for arg in ["user", "auth", "finalize"]:
+            if not self.credentials.conf(arg): continue
+            self.arguments[arg] = self.arguments[arg] or self.credentials.conf(arg)
+
+        if not self.arguments["user"]:
+            raise errors.PluginError("Missing or incorrect argument 'user' for WAPI.")
+        if not self.arguments["auth"]:
+            raise errors.PluginError("Missing or incorrect argument 'auth' for WAPI.")
+
+
     def _perform(self, domain: str, validation_name: str, validation: str) -> None:
+        logger.debug("Starting ..")
         self._get_wedos_client().add_txt_record(domain, validation_name, validation)
-        logging.debug("Waiting 5 minutes for applied changes on internet")
-        time.sleep(300)
+        logger.debug("Waiting 5 minutes for applied changes on internet")
+        sleep(300)
 
     def _cleanup(self, domain: str, validation_name: str, validation: str) -> None:
         self._get_wedos_client().del_txt_record(domain, validation_name, validation)
 
+        logger.debug(f"Processing final command: {self.arguments['finalize']}")
+        if not self.arguments["finalize"]: return
+        process = run(split(self.arguments["finalize"]), shell=False, stderr=PIPE)
+
+        if process.returncode != 0:
+            logger.warn(f"Command: \"{self.arguments['finalize']}\" returned non-zero exit status\
+                        {process.returncode} with error message:\n{process.stderr.decode().strip()}")
+
     def _get_wedos_client(self) -> _WedosClient:
-        return _WedosClient(
-            self.credentials.conf("username"),  
-            self.credentials.conf("password"),
-        )
+        return _WedosClient(self.arguments["user"], self.arguments["auth"])
