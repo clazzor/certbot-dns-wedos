@@ -1,5 +1,3 @@
-#import requests, subprocess, logging, hashlib, shlex, json, time
-#from datetime import datetime
 from requests import Session, post
 from subprocess import run, PIPE
 from logging import getLogger
@@ -23,13 +21,7 @@ class _WedosClient():
         self.ttl = TTL
         self.session = Session()
 
-    """
-    def _getHour(self) -> str:
-        time = str(datetime.now().hour)
-        if len(time) == 1: time = "0" + time
-        return time
-    """
-    
+
     def _findID(self, data: dict, key: str) -> int:
         ID = -1
         try:
@@ -41,12 +33,10 @@ class _WedosClient():
         except:
             return ID
 
-
     def _clientConnect(self, command: str, params: dict = None, debug: str = "") -> post:
         logger.debug(debug)
         auth = (self.username + self.password + strftime('%H', localtime())).encode("ascii")
-        #auth = (self.username + self.password + self._getHour()).encode("ascii")
-        
+
         data = {
             "user": self.username,
             "auth": sha1(auth).hexdigest(),

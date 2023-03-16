@@ -56,6 +56,18 @@ rm -r wedos.zip wedos
 ```
 
 ## Setup
+### Certbot Command
+The basic structure of the command is the same as with all other plugins, we define the plugin and domains, like this:
+```commandline
+certbot certonly \
+--authenticator dns-wedos \
+-d *.example.com \
+-d example.com
+```
+In any case, without entering the required command/plugin parameters, it cannot function!
+
+---
+
 ### Arguments and credentials
 To ensure proper functionality of the plugin, it is necessary to set some parameters. Here are the arguments/credentials:
 
@@ -69,22 +81,74 @@ To ensure proper functionality of the plugin, it is necessary to set some parame
 
 > \* Only required if the path to the credentials is not defined!
 
-* **If the credential path is defined, then the user and auth must be defined as well.**
+* **CAUTION: The auth (password) must be entered as an encrypted password using SHA1. You can use a website like this one to encrypt your password [emn178 sha1](https://emn178.github.io/online-tools/sha1.html)!**
+* **If the credential path is defined, then the user and auth must be defined in INI file as well. Otherwise, an error will occur.**
 * **The arguments overwrite the credentials data.**
 
-### Structure
-For argument you use character -
+### Parametr Structure
+For `arguments`  
+* The prefix --dns-wedos is used for arguments, and values are written after a space. For values with spaces, such as `hello world`, quotes&#160;`"` or apostrophes&#160;`'` are used.
 ```commandline
 --dns-wedos-<NameOfArgument> <Value>
 ```
+Example:
+```commandline
+--dns-wedos-finalize "nginx -s reload"
+```
 
-For credential you use character -
+For `credential`  
+* The prefix dns_wedos_ is used for credentials, and values are written after an equal&#160;sign&#160;`=`. For values with spaces, such as `hello world`, a space can be used.
 ```commandline
 dns_wedos_<NameOfArgument>=<Value>
 ```
+Example:
+```commandline
+dns_wedos_finalize=nginx -s reload
+```
 
-### Example
-certbot certonly -d *.example.eu -d example.eu --authenticator dns-wedos
+---
+
+### Examples
+Using `credential`
+```commandline
+certbot certonly --authenticator dns-wedos \
+--dns-wedos-credentials /path/to/the/file.ini \
+-d *.example.com -d example.com
+```
+
+The `/path/to/the/file.ini` file:
+```commandline
+dns_wedos_user=user@example.com
+dns_wedos_auth=c3499c2729730a7f807efb8676a92dcb6f8a3f8f
+```
+---
+
+Using `arguments`
+```commandline
+certbot certonly --authenticator dns-wedos \
+--dns-wedos-user=user@example.com \
+--dns-wedos-auth=c3499c2729730a7f807efb8676a92dcb6f8a3f8f \
+-d *.example.com -d example.com
+```
+
+---
+
+Using `credentials` and `arguments`  
+_(arguments overwrite the credentials so user will be `admin@example.com`)_
+```commandline
+certbot certonly --authenticator dns-wedos \
+--dns-wedos-user admin@example.com \
+--dns-wedos-finalize "nginx -s reload" \
+--dns-wedos-credentials /path/to/the/file.ini \
+-d *.example.com -d example.com
+```
+
+The `/path/to/the/file.ini` file:
+```commandline
+dns_wedos_user=user@example.com
+dns_wedos_auth=c3499c2729730a7f807efb8676a92dcb6f8a3f8f
+```
+> _Note: `c3499c2729730a7f807efb8676a92dcb6f8a3f8f` is encrypted word `test` with sha1_
 
 ## Used Modules/Libraries
 I just want to mention which modules/libraries this plugin uses for better debugging of errors in the future, in case any occur.
@@ -102,5 +166,6 @@ I just want to mention which modules/libraries this plugin uses for better debug
 
 ## Errors
 If an error occurs, Certbot will display the type of error that has occurred.  
-If it is an error related to communication between the plugin and WAPI, you will receive a [return code](https://en.wikipedia.org/wiki/Exit_status). Wedos has a list of error codes on their Czech website, which you can access through this link [WAPI list of return codes](https://kb.wedos.com/cs/wapi-api-rozhrani/zakladni-informace-wapi-api-rozhrani/wapi-seznam-navratovych-kodu). _(If you do not speak Czech, you can use [Google Translate](https://kb-wedos-com.translate.goog/cs/wapi-api-rozhrani/zakladni-informace-wapi-api-rozhrani/wapi-seznam-navratovych-kodu/?_x_tr_sl=cs&_x_tr_tl=en) :D)_
-
+* If you encounter an [HTTP error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) related to communication with WAPI, you will receive an [HTTP error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
+* If it is an error related to communication between the plugin and WAPI, you will receive a [return code](https://en.wikipedia.org/wiki/Exit_status). Wedos has a list of error codes on their Czech website, which you can access through this link [WAPI list of return codes](https://kb.wedos.com/cs/wapi-api-rozhrani/zakladni-informace-wapi-api-rozhrani/wapi-seznam-navratovych-kodu). _(If you do not speak Czech, you can use [Google Translate](https://kb-wedos-com.translate.goog/cs/wapi-api-rozhrani/zakladni-informace-wapi-api-rozhrani/wapi-seznam-navratovych-kodu/?_x_tr_sl=cs&_x_tr_tl=en) :D)_
+* If there is an error with the command you entered as the `finalize` parameter, you will receive a [error code](https://en.wikipedia.org/wiki/Error_code) and error text similar to what you would get if you entered it in the terminal.
