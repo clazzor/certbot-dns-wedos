@@ -98,6 +98,7 @@ Example:
 
 For `credential`  
 * The prefix dns_wedos_ is used for credentials, and values are written after an equal&#160;sign&#160;`=`. For values with spaces, such as `hello world`, a space can be used.
+* For the ini file you must apply permission: `chmod 600 file.ini`
 ```commandline
 dns_wedos_<NameOfArgument>=<Value>
 ```
