@@ -29,7 +29,7 @@ With `wget`
 ```commandline
 wget https://github.com/clazzor/certbot-dns-wedos/archive/refs/heads/main.zip -O wedos.zip
 unzip wedos.zip -d wedos
-cd wedos/certbot-dns-wedos
+cd wedos/certbot-dns-wedos-main/
 pip3 install .
 ```
 
@@ -37,7 +37,7 @@ With `curl`
 ```commandline
 curl -L https://github.com/clazzor/certbot-dns-wedos/archive/refs/heads/main.zip --output wedos.zip
 unzip wedos.zip -d wedos
-cd wedos/certbot-dns-wedos
+cd wedos/certbot-dns-wedos-main/
 pip3 install .
 ```
 ---
