@@ -60,7 +60,7 @@ class _WedosClient():
         if any(arg is None for arg in [domain, validation_name, validation]):
             raise errors.Error("Missing important component, this is error from Certbot, not from plugin")
 
-        record = {"domain": domain, 
+        record = {"domain": domain,
                   "name": validation_name.replace('.' + domain, ''),
                   "type": "TXT",
                   "ttl": self.ttl,
@@ -130,7 +130,7 @@ class Authenticator(DNSAuthenticator):
         if self.arguments["credentials"]: self._get_credentials()
 
         for arg in ["user", "auth", "finalize"]:
-            if not self.credentials.conf(arg): continue
+            if not self.credentials or not self.credentials.conf(arg): continue
             self.arguments[arg] = self.arguments[arg] or self.credentials.conf(arg)
 
         if not self.arguments["user"]:
