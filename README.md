@@ -74,16 +74,16 @@ To ensure proper functionality of the plugin, it is necessary to set some parame
 | Name                       | Argument                   | Credential       | Description                                                                       |
 |:---------------------------|:--------------------------:|:----------------:|:---------------------------------------------------------------------------------:|
 | propagation&#x2011;seconds | Optional (default&#160;30) | Not&#160;allowed | Seconds to wait for DNS propagation before verifying DNS record with ACME server. |
-| credentials                | Optional                   | Not&#160;allowed | The complete path to the INI file for credentials.                                |
-| user                       | Required&#160;*            | Required         | The user (username) for WAPI.                                                     |
-| auth                       | Required&#160;*            | Required         | The auth (password) for WAPI and must be encrypted using SHA1.                    |
-| finalize                   | Optional                   | Optinal          | The command to be executed at the end.                                            |
+| credentials                | ~~Optional~~ Required      | Not&#160;allowed | The complete path to the INI file for credentials.                                |
+| user                       | ~~Required&#160;*~~        | Required         | The user (username) for WAPI.                                                     |
+| auth                       | ~~Required&#160;*~~        | Required         | The auth (password) for WAPI ~~and must be encrypted using SHA1.~~                |
+| ~~finalize~~               | ~~Optional~~               | ~~Optinal~~      | ~~The command to be executed at the end.~~                                        |
 
 > \* Only required if the path to the credentials is not defined!
 
-* **CAUTION: The auth (password) must be entered as an encrypted password using SHA1. You can use a website like this one to encrypt your password [emn178 sha1](https://emn178.github.io/online-tools/sha1.html)!**
+* **~~CAUTION: The auth (password) must be entered as an encrypted password using SHA1. You can use a website like this one to encrypt your password [emn178 sha1](https://emn178.github.io/online-tools/sha1.html)!~~**
 * **If the credential path is defined, then the user and auth must be defined in INI file as well. Otherwise, an error will occur.**
-* **The arguments overwrite the credentials data.**
+* **~~The arguments overwrite the credentials data.~~**
 
 ### Parametr Structure
 For `arguments`  
