@@ -60,7 +60,7 @@ class _WedosClient():
         if any(arg is None for arg in [domain, validation_name, validation]):
             raise errors.Error("Missing important component, this is error from Certbot, not from plugin")
 
-        record = {"domain": domain, 
+        record = {"domain": domain,
                   "name": validation_name.replace('.' + domain, ''),
                   "type": "TXT",
                   "ttl": self.ttl,
@@ -141,11 +141,13 @@ class Authenticator(DNSAuthenticator):
 
     def _perform(self, domain: str, validation_name: str, validation: str) -> None:
         logger.debug("Starting ..")
+        domain = '.'.join(domain.split('.')[-2:])
         self._get_wedos_client().add_txt_record(domain, validation_name, validation)
         logger.debug("Waiting 5 minutes for applied changes on internet")
         sleep(300)
 
     def _cleanup(self, domain: str, validation_name: str, validation: str) -> None:
+        domain = '.'.join(domain.split('.')[-2:])
         self._get_wedos_client().del_txt_record(domain, validation_name, validation)
 
         logger.debug(f"Processing final command: {self.arguments['finalize']}")
