@@ -1,59 +1,67 @@
-import hashlib 
-import pytz
-from datetime import datetime
+import hashlib, pytz, re
+from datetime import datetime 
 
-import requests
-from json import dumps
+import requests, json
 from typing import Any, Callable, Optional
 
-import logging
+import logging 
 from certbot import errors
 from certbot.plugins.dns_common import CredentialsConfiguration, DNSAuthenticator
 
 logger = logging.getLogger(__name__)
 URL = 'https://api.wedos.com/wapi/json'
 
+
+def convertDomain(func: Callable[..., Any]) -> Callable[..., Any]:
+    def wrap(self, domain: str, validation_name: str, validation: str) -> Any:
+        regex = '([a-zA-Z0-9-]+)(\.[a-zA-Z]{2,5})?(\.[a-zA-Z]+$)'
+        pureDomain = re.search(regex,  domain).group(0)
+        subDomain = re.sub('\.'+regex, '', validation_name)
+        return func(self, pureDomain, subDomain, validation)
+    return wrap
+
+
 class _WedosClient():
     def __init__(self, username: str, password: str) -> None:
         self.url = URL
         self.username = username
-        self.password = password
+        self.password = hashlib.sha1(password.encode('ascii')).hexdigest()
         self.session = requests.Session()
 
-    def _findID(self, data: dict, key: str) -> int:
-        ID = -1
-        try:
-            for row in data['data']['row']:
-                if row['rdata'] == key:
-                    ID = row['ID']
-                    break
-            return ID
-        except:
-            return ID
+    def _findTxtID(self, data: dict, validation: str) -> int:
+        if 'data' not in data['response']: return -1
+        if 'row' not in data['response']['data']: return -1
+        data = data['response']['data']['row']
+
+        for record in data:
+            if 'rdata' not in record: continue
+            if 'ID' not in record: continue
+            if record['rdata'] == validation: return record['ID']
+        return -1
         
-    def _validResponse(self, response: requests.post) -> None:
+    def _handlerResponse(self, response: requests.post) -> dict:
         if not response.ok:
             raise errors.PluginError('Cannot access the Wedos API, '
                                     f'HTTP error code is {response.status_code}')
         try:
-            responseJson = response.json()
-        except Exception as e:
+            response = response.json()
+        except json.JSONDecodeError as e:
             raise errors.PluginError('Error occurred while parsing the response '
                                      f'from Wedos API into JSON format: {e}')
-        if 'response' not in responseJson:
+        if 'response' not in response:
             raise errors.PluginError('Unknown error occurred while receiving '
                                      'response from Wedos API.')
-        if 'code' not in responseJson['response']:
+        if 'code' not in response['response']:
             raise errors.PluginError('Missing WAPI Error code in the '
                                      'response from Wedos API.')
-        if responseJson['response']['code'] >= 2000:
+        if response['response']['code'] >= 2000:
             raise errors.PluginError('Error code received from Wedos API, The error '
-                                    f'code is  {responseJson["response"]["code"]}')
+                                    f'code is {response["response"]["code"]}')
+        return response
         
-    def _clientSend(self, command: str, requirement: dict = None) -> requests.post:
-        password = hashlib.sha1(self.password.encode('ascii')).hexdigest()
+    def _clientSend(self, command: str, requirement: dict = None) -> dict:
         time = datetime.now(pytz.timezone('Europe/Prague')).strftime('%H')
-        auth = self.username + password + time
+        auth = self.username + self.password + time
         auth = hashlib.sha1(auth.encode('ascii')).hexdigest()
 
         data = {
@@ -62,18 +70,18 @@ class _WedosClient():
             'command': command,
             'data': requirement
         }
-            
-        data = {'request': dumps({'request': data})}
+
+        data = {'request': json.dumps({'request': data})}
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         response = self.session.post(self.url, data=data, headers=headers)
 
-        self._validResponse(response)
-        return response
+        return self._handlerResponse(response)
 
+    @convertDomain
     def add_txt_record(self, domain: str, validation_name: str, validation: str) -> None:
         dns_row_add = {
             'domain': domain,
-            'name': validation_name.replace('.' + domain, ''),
+            'name': validation_name,
             'type': 'TXT',
             'ttl': 300,
             'rdata': validation
@@ -82,14 +90,16 @@ class _WedosClient():
         self._clientSend('dns-row-add', dns_row_add)
         self._clientSend('dns-domain-commit', {'name': domain})
 
+    @convertDomain
     def del_txt_record(self, domain: str, validation_name: str, validation: str) -> None:
-        response = self._clientSend('dns-rows-list', {'domain': domain})
-        id = self._findID(response.json()['response'],  validation)
-        if id == -1:
+        dns_records = self._clientSend('dns-rows-list', {'domain': domain})
+        txtID = self._findTxtID(dns_records,  validation)
+
+        if txtID == -1:
             logger.warn('Could not find the created TXT record. It is recommended to check it.')
             return
 
-        self._clientSend('dns-row-delete', {'domain': domain, 'row_id': id})
+        self._clientSend('dns-row-delete', {'domain': domain, 'row_id': txtID})
         self._clientSend('dns-domain-commit', {'name': domain})
 
 
@@ -124,6 +134,10 @@ class Authenticator(DNSAuthenticator):
         if propagation_seconds < 300: 
             raise errors.PluginError('Propagation seconds cannot be lower than 300 seconds.'
                                      ' (Recommended propagation time is 420 seconds)')
+        if '@' not in user:
+            raise errors.PluginError('Wrong parameter USER (email) for the Wedos API.')
+        if len(auth) < 8:
+            raise errors.PluginError('Wrong parameter AUTH (password) for the Wedos API.')
 
     def _setup_credentials(self) -> None:
         self.credentials = self._configure_credentials(
@@ -132,7 +146,7 @@ class Authenticator(DNSAuthenticator):
             None,
             self._validate_credentials
         )
-      
+
     def _perform(self, domain: str, validation_name: str, validation: str) -> None:
         self._get_wedos_client().add_txt_record(
             domain, validation_name, validation
