@@ -34,10 +34,10 @@ rm -r certbot-dns-wedos
 
 ## Setup
 ### Arguments 
-| Name                                                               | Required           | Description                                                                          |
-|:-------------------------------------------------------------------|:------------------:|:-------------------------------------------------------------------------------------|
-| &#x2011;&#x2011;dns&#x2011;wedos&#x2011;propagation&#x2011;seconds | :x:                | Seconds to wait for DNS propagation before verifying DNS record with ACME server.    |
-| &#x2011;&#x2011;dns&#x2011;wedos&#x2011;credentials                | :white_check_mark: | The complete path to the INI file for credentials containing data for authorization. |
+| Name                            | Required           | Description                                                                          |
+|:--------------------------------|:------------------:|:-------------------------------------------------------------------------------------|
+| --dns-wedos-propagation-seconds | :x:                | Seconds to wait for DNS propagation before verifying DNS record with ACME server.    |
+| --dns-wedos-credentials         | :white_check_mark: | The complete path to the INI file for credentials containing data for authorization. |
 > The default value of `propagation-seconds` is 360, if there is a problem with validation, increase the number. The lower limit is 300.
 
 ### Command example
@@ -45,7 +45,7 @@ The basic structure of the command is the same as with all other cerbot plugins,
 ```commandline
 certbot certonly \
 --authenticator dns-wedos \
---dns-wedos-propagation‑seconds 390 \
+--dns-wedos-propagation-seconds 390 \
 --dns-wedos-credentials /path/to/the/file.ini \
 -d example.com -d *.example.com
 ```
