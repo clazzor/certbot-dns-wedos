@@ -4,169 +4,94 @@ This plugin uses [certbot](https://github.com/certbot/certbot)'s [dns-01 challen
 ## Installation
 ### Prerequirements
 For the functionality of this plugin, you will need to install these programs/softwares.
-| Name                                           | Install                                                                       | Version   |
-|:----------------------------------------------:|:-----------------------------------------------------------------------------:|:----------|
-| [python](https://github.com/python/cpython)    | [Link](https://packaging.python.org/en/latest/tutorials/installing-packages) | >= 3.7    |
-| [pip](https://github.com/pypa/pip/)            | [Link](https://pip.pypa.io/en/stable/installation)                           | >= 18.1   |
-| [certbot](https://github.com/certbot/certbot/) | [Link](https://certbot.eff.org/instructions)                                 | >= 0.34.0 |
+| Name                                           | Install                                                                      | Version   |
+|:----------------------------------------------:|:----------------------------------------------------------------------------:|:---------:|
+| [python](https://github.com/python/cpython)    | [Link](https://packaging.python.org/en/latest/tutorials/installing-packages) | >= 3.8    |
+| [pip](https://github.com/pypa/pip/)            | [Link](https://pip.pypa.io/en/stable/installation)                           | >= 19.2.3 |
+| [certbot](https://github.com/certbot/certbot/) | [Link](https://certbot.eff.org/instructions)                                 | >= 2.8.0  |
 
-> _Note that in theory, even the oldest versions that are mentions should work, but the test was conducted on a Debian 10 system with Python 3.9.2, pip3 20.3.4, and Certbot 2.2.0, so there may be compatibility issues._
+> _Note that in theory, even an older version should work, but it has not been tested._
 
 You will also **need to have WAPI activated** for communication between Wedos and the plugin. To activate WAPI, you can read the article from Wedos, available at this link [WAPI activation and settings](https://kb.wedos.com/en/wapi-api-interface/wapi-activation-and-settings).
 > **CAUTION: Please note that the IP address of the server where Certbot with the plugin will be located must be allowed on WAPI, otherwise it will not work.**
 
 ### The Install
-First, we will download the source code from GitHub, and then we can install the plugin using pip.
+#### From `pip`
+```commandline
+pip install certbot-dns-wedos
+```
 
-With `git`
+#### Manual with `git`
 ```commandline
 git clone https://github.com/clazzor/certbot-dns-wedos.git
-cd certbot-dns-wedos
-pip3 install .
+pip3 install ./certbot-dns-wedos --break-system-packages
 ```
 
-With `wget`   
-```commandline
-wget https://github.com/clazzor/certbot-dns-wedos/archive/refs/heads/main.zip -O wedos.zip
-unzip wedos.zip -d wedos
-cd wedos/certbot-dns-wedos-main/
-pip3 install .
-```
-
-With `curl`
-```commandline
-curl -L https://github.com/clazzor/certbot-dns-wedos/archive/refs/heads/main.zip --output wedos.zip
-unzip wedos.zip -d wedos
-cd wedos/certbot-dns-wedos-main/
-pip3 install .
-```
----
 After installation, the created folders may be deleted.
 
-If you have used it `git`
 ```commandline
-cd .. 
 rm -r certbot-dns-wedos
 ```
 
-If you have used it `wget` or `curl`
-```commandline
-cd .. 
-rm -r wedos.zip wedos
-```
 
 ## Setup
 ### Certbot Command
-The basic structure of the command is the same as with all other plugins, we define the plugin and domains, like this:
+The basic structure of the command is the same as with all other plugins, we define the plugin, propagation-seconds, credentials file and domains, like this:
 ```commandline
 certbot certonly \
 --authenticator dns-wedos \
--d *.example.com \
--d example.com
+--dns-wedos-propagation‑seconds 420 \
+--dns-wedos-credentials /path/to/the/file.ini \
+-d sub.example.com
 ```
-In any case, without entering the required command/plugin parameters, it cannot function!
 
 ---
-
 ### Arguments and credentials
-To ensure proper functionality of the plugin, it is necessary to set some parameters. Here are the arguments/credentials:
 
-| Name                       | Argument                   | Credential       | Description                                                                       |
-|:---------------------------|:--------------------------:|:----------------:|:---------------------------------------------------------------------------------:|
-| propagation&#x2011;seconds | Optional (default&#160;30) | Not&#160;allowed | Seconds to wait for DNS propagation before verifying DNS record with ACME server. |
-| credentials                | ~~Optional~~ Required      | Not&#160;allowed | The complete path to the INI file for credentials.                                |
-| user                       | ~~Required&#160;*~~        | Required         | The user (username) for WAPI.                                                     |
-| auth                       | ~~Required&#160;*~~        | Required         | The auth (password) for WAPI ~~and must be encrypted using SHA1.~~                |
-| ~~finalize~~               | ~~Optional~~               | ~~Optinal~~      | ~~The command to be executed at the end.~~                                        |
-
-> \* Only required if the path to the credentials is not defined!
-
-* **~~CAUTION: The auth (password) must be entered as an encrypted password using SHA1. You can use a website like this one to encrypt your password [emn178 sha1](https://emn178.github.io/online-tools/sha1.html)!~~**
-* **If the credential path is defined, then the user and auth must be defined in INI file as well. Otherwise, an error will occur.**
-* **~~The arguments overwrite the credentials data.~~**
-
-### Parametr Structure
-For `arguments`  
-* The prefix --dns-wedos is used for arguments, and values are written after a space. For values with spaces, such as `hello world`, quotes&#160;`"` or apostrophes&#160;`'` are used.
-```commandline
---dns-wedos-<NameOfArgument> <Value>
-```
-Example:
-```commandline
---dns-wedos-finalize "nginx -s reload"
-```
-
-For `credential`  
-* The prefix dns_wedos_ is used for credentials, and values are written after an equal&#160;sign&#160;`=`. For values with spaces, such as `hello world`, a space can be used.
-* For the ini file you must apply permission: `chmod 600 file.ini`
-```commandline
-dns_wedos_<NameOfArgument>=<Value>
-```
-Example:
-```commandline
-dns_wedos_finalize=nginx -s reload
-```
-
+| Name                       | Argument                    | Credential       | Description                                                                       |
+|:---------------------------|:---------------------------:|:----------------:|:----------------------------------------------------------------------------------|
+| propagation&#x2011;seconds | Optional (default&#160;360) | Not&#160;allowed | Seconds to wait for DNS propagation before verifying DNS record with ACME server. |
+| credentials                | Required                    | Not&#160;allowed | The complete path to the INI file for credentials.                                |
+| user                       | Not&#160;allowed            | Required         | The user (username) for WAPI.                                                     |
+| auth                       | Not&#160;allowed            | Required         | The auth (password) for WAPI                                                      |
+* The prefix `dns_wedos_` is required in arguments and credentials file 
 ---
-
-### Examples
-Using `credential`
-```commandline
-certbot certonly --authenticator dns-wedos \
---dns-wedos-credentials /path/to/the/file.ini \
--d *.example.com -d example.com
-```
-
+### Credentials file
 The `/path/to/the/file.ini` file:
 ```commandline
 dns_wedos_user=user@example.com
-dns_wedos_auth=c3499c2729730a7f807efb8676a92dcb6f8a3f8f
-```
----
-
-Using `arguments`
-```commandline
-certbot certonly --authenticator dns-wedos \
---dns-wedos-user=user@example.com \
---dns-wedos-auth=c3499c2729730a7f807efb8676a92dcb6f8a3f8f \
--d *.example.com -d example.com
+dns_wedos_auth=examplepassword
 ```
 
----
-
-Using `credentials` and `arguments`  
-_(arguments overwrite the credentials so user will be `admin@example.com`)_
-```commandline
-certbot certonly --authenticator dns-wedos \
---dns-wedos-user admin@example.com \
---dns-wedos-finalize "nginx -s reload" \
---dns-wedos-credentials /path/to/the/file.ini \
--d *.example.com -d example.com
-```
-
-The `/path/to/the/file.ini` file:
-```commandline
-dns_wedos_user=user@example.com
-dns_wedos_auth=c3499c2729730a7f807efb8676a92dcb6f8a3f8f
-```
-> _Note: `c3499c2729730a7f807efb8676a92dcb6f8a3f8f` is encrypted word `test` with sha1_
+* Values are written after an equal&#160;sign&#160;`=`. For values with spaces, such as `hello world`, a space can be used.
+* For the ini file you should apply permission: `chmod 600 file.ini`
 
 ## Used Modules/Libraries
 I just want to mention which modules/libraries this plugin uses for better debugging of errors in the future, in case any occur.
 
-| Name                                                                        | License                                                         |
-|:---------------------------------------------------------------------------:|:---------------------------------------------------------------:|
-| [setuptools](https://github.com/pypa/setuptools)                            | [MIT](https://github.com/pypa/setuptools/blob/main/LICENSE)     |
-| [requests](https://github.com/psf/requests)                                 | [Apache 2.0](https://github.com/psf/requests/blob/main/LICENSE) |
-| [subprocess](https://github.com/python/cpython/blob/3.11/Lib/subprocess.py) | [PSF](https://github.com/python/cpython/blob/main/LICENSE)      |
-| [logging](https://github.com/python/cpython/tree/main/Lib/logging)          | [PSF](https://github.com/python/cpython/blob/main/LICENSE)      |
-| [haslib](https://github.com/python/cpython/blob/3.11/Lib/hashlib.py)        | [PSF](https://github.com/python/cpython/blob/main/LICENSE)      |
-| [shelx](https://github.com/python/cpython/blob/3.11/Lib/shlex.py)           | [PSF](https://github.com/python/cpython/blob/main/LICENSE)      |
-| [json](https://github.com/python/cpython/tree/3.11/Lib/json)                | [PSF](https://github.com/python/cpython/blob/main/LICENSE)      |
-| [time](https://github.com/python/cpython/blob/main/Modules/timemodule.c)    | [PSF](https://github.com/python/cpython/blob/main/LICENSE)      |
+<table>
+<tr><td>
+| Name                                                                    | License                                                                  |
+|:-----------------------------------------------------------------------:|:------------------------------------------------------------------------:|
+| [certbot](https://github.com/certbot/certbot)                           | [Apache 2.0](https://github.com/certbot/certbot/blob/master/LICENSE.txt) |
+| [datetime](https://github.com/python/cpython/blob/main/Lib/datetime.py) | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
+| [hashlib](https://github.com/python/cpython/blob/main/Lib/hashlib.py)   | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
+| [json](https://github.com/python/cpython/blob/main/Lib/json)            | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
+| [logging](https://github.com/python/cpython/blob/main/Lib/logging)      | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
+</td><td>
+| Name                                                                    | License                                                                  |
+|:-----------------------------------------------------------------------:|:------------------------------------------------------------------------:|
+| [pytz](https://github.com/stub42/pytz)                                  | [MIT](https://github.com/stub42/pytz/blob/master/LICENSE.txt)            |
+| [re](https://github.com/python/cpython/blob/main/Lib/re)                | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
+| [requests](https://github.com/psf/requests)                             | [Apache 2.0](https://github.com/psf/requests/blob/main/LICENSE)          |
+| [setuptools](https://github.com/pypa/setuptools)                        | [MIT](https://github.com/pypa/setuptools/blob/main/LICENSE)              |
+| [typing](https://github.com/python/cpython/blob/main/Lib/typing.py)     | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
+</td></tr>
+</table>
 
 ## Errors
 If an error occurs, Certbot will display the type of error that has occurred.  
+* If 420 seconds
 * If you encounter an [HTTP error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) related to communication with WAPI, you will receive an [HTTP error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
-* If it is an error related to communication between the plugin and WAPI, you will receive a [return code](https://en.wikipedia.org/wiki/Exit_status). Wedos has a list of error codes on their Czech website, which you can access through this link [WAPI list of return codes](https://kb.wedos.com/cs/wapi-api-rozhrani/zakladni-informace-wapi-api-rozhrani/wapi-seznam-navratovych-kodu). _(If you do not speak Czech, you can use [Google Translate](https://kb-wedos-com.translate.goog/cs/wapi-api-rozhrani/zakladni-informace-wapi-api-rozhrani/wapi-seznam-navratovych-kodu/?_x_tr_sl=cs&_x_tr_tl=en) :D)_
-* If there is an error with the command you entered as the `finalize` parameter, you will receive a [error code](https://en.wikipedia.org/wiki/Error_code) and error text similar to what you would get if you entered it in the terminal.
+* If it is an error related to communication between the plugin and WAPI, you will receive a [return code](https://en.wikipedia.org/wiki/Exit_status). Wedos has a list of error codes on their website, which you can access through this link [WAPI list of return codes](https://kb.wedos.com/en/wapi-api-interface/wapi-manual/#return-codes).
+
