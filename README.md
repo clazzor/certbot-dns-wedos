@@ -71,6 +71,7 @@ More information on this repository: [Load a new certificate after a successful 
 
 ## Errors
 If an error occurs, Certbot will display the type of error that has occurred.  
+* If you get this error "Certbot failed to authenticate some domains (authenticator: dns-wedos)", increase the `--dns-wedos-propagation-seconds`, recommended to 420 seconds.
 * If you encounter an [HTTP error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) related to communication with WAPI, you will receive an [HTTP error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
 * If it is an error related to communication between the plugin and WAPI, you will receive a [return code](https://en.wikipedia.org/wiki/Exit_status). Wedos has a list of error codes on their website, which you can access through this link [WAPI list of return codes](https://kb.wedos.com/en/wapi-api-interface/wapi-manual/#return-codes).
 
