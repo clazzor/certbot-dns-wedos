@@ -111,7 +111,7 @@ class Authenticator(DNSAuthenticator):
 
     @classmethod
     def add_parser_arguments(cls, add: Callable[..., None],
-                             default_propagation_seconds: int = 360) -> None:
+                             default_propagation_seconds: int = 420) -> None:
         super().add_parser_arguments(add, default_propagation_seconds)
         add('credentials', help='Wedos credentials INI file.')
 
