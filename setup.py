@@ -8,7 +8,7 @@ install_requires = [
     "acme>=2.8.0",
     "setuptools",
     "requests",
-    "pytz,"
+    "pytz",
 ]
 
 with open("README.md") as f:
