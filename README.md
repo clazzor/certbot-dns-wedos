@@ -38,14 +38,14 @@ rm -r certbot-dns-wedos
 |:--------------------------------|:------------------:|:-------------------------------------------------------------------------------------|
 | --dns-wedos-propagation-seconds | :x:                | Seconds to wait for DNS propagation before verifying DNS record with ACME server.    |
 | --dns-wedos-credentials         | :white_check_mark: | The complete path to the INI file for credentials containing data for authorization. |
-> The default value of `propagation-seconds` is 360, if there is a problem with validation, increase the number. The lower limit is 300.
+> The default value of `propagation-seconds` is 420, if there is a problem with validation, increase the number. The lower limit is 300.
 
 ### Command example
 The basic structure of the command is the same as with all other cerbot plugins, we define which plugin to use, propagation-seconds, credentials file and domains, like this:
 ```commandline
 certbot certonly \
 --authenticator dns-wedos \
---dns-wedos-propagation-seconds 390 \
+--dns-wedos-propagation-seconds 420 \
 --dns-wedos-credentials /path/to/the/file.ini \
 -d example.com -d *.example.com
 ```
@@ -71,7 +71,7 @@ More information on this repository: [Load a new certificate after a successful 
 
 ## Errors
 If an error occurs, Certbot will display the type of error that has occurred.  
-* If you get this error "Certbot failed to authenticate some domains (authenticator: dns-wedos)", increase the `--dns-wedos-propagation-seconds`, recommended to 420 seconds.
+* If you get this error "*Certbot failed to authenticate some domains (authenticator: dns-wedos)*", increase the number in the `--dns-wedos-propagation-seconds` argument.
 * If you encounter an [HTTP error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) related to communication with WAPI, you will receive an [HTTP error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
 * If it is an error related to communication between the plugin and WAPI, you will receive a [return code](https://en.wikipedia.org/wiki/Exit_status). Wedos has a list of error codes on their website, which you can access through this link [WAPI list of return codes](https://kb.wedos.com/en/wapi-api-interface/wapi-manual/#return-codes).
 
