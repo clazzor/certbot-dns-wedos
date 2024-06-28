@@ -34,10 +34,10 @@ rm -r certbot-dns-wedos
 
 ## Setup
 ### Arguments 
-| Name                            | Required           | Description                                                                          |
-|:--------------------------------|:------------------:|:-------------------------------------------------------------------------------------|
-| --dns-wedos-propagation-seconds | :x:                | Seconds to wait for DNS propagation before verifying DNS record with ACME server.    |
-| --dns-wedos-credentials         | :white_check_mark: | The complete path to the INI file for credentials containing data for authorization. |
+| Name                            | Required | Description                                                                          |
+|:--------------------------------|:--------:|:-------------------------------------------------------------------------------------|
+| --dns-wedos-propagation-seconds | ❌       | Seconds to wait for DNS propagation before verifying DNS record with ACME server.    |
+| --dns-wedos-credentials         | ✅       | The complete path to the INI file for credentials containing data for authorization. |
 > The default value of `propagation-seconds` is 420, if there is a problem with validation, increase the number. The lower limit is 300.
 
 ### Command example
@@ -51,10 +51,10 @@ certbot certonly \
 ```
 
 ### Credentials file
-| Name           | Required           | Description                   |
-|:---------------|:------------------:|:------------------------------|
-| dns_wedos_user | :white_check_mark: | The user (email) for WAPI.    |
-| dns_wedos_auth | :white_check_mark: | The auth (password) for WAPI. |
+| Name           | Required | Description                   |
+|:---------------|:--------:|:------------------------------|
+| dns_wedos_user | ✅       | The user (email) for WAPI.    |
+| dns_wedos_auth | ✅       | The auth (password) for WAPI. |
 
 This is what the credentials file for wedos plugin should look like.
 ```commandline
