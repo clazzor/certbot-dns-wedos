@@ -75,11 +75,15 @@ If an error occurs, Certbot will display the type of error that has occurred.
 
 ## Used Modules/Libraries
 I just want to mention which modules/libraries this plugin uses for better debugging of errors in the future, in case any occur.
-
-| Name                                                                    | License                                                                  | Name                                                                | License                                                         |
-|:-----------------------------------------------------------------------:|:------------------------------------------------------------------------:|:-------------------------------------------------------------------:|:---------------------------------------------------------------:|
-| [certbot](https://github.com/certbot/certbot)                           | [Apache 2.0](https://github.com/certbot/certbot/blob/master/LICENSE.txt) | [pytz](https://github.com/stub42/pytz)                              | [MIT](https://github.com/stub42/pytz/blob/master/LICENSE.txt)   |
-| [datetime](https://github.com/python/cpython/blob/main/Lib/datetime.py) | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               | [re](https://github.com/python/cpython/blob/main/Lib/re)            | [PSF](https://github.com/python/cpython/blob/main/LICENSE)      |
-| [hashlib](https://github.com/python/cpython/blob/main/Lib/hashlib.py)   | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               | [requests](https://github.com/psf/requests)                         | [Apache 2.0](https://github.com/psf/requests/blob/main/LICENSE) |
-| [json](https://github.com/python/cpython/blob/main/Lib/json)            | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               | [setuptools](https://github.com/pypa/setuptools)                    | [MIT](https://github.com/pypa/setuptools/blob/main/LICENSE)     |
-| [logging](https://github.com/python/cpython/blob/main/Lib/logging)      | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               | [typing](https://github.com/python/cpython/blob/main/Lib/typing.py) | [PSF](https://github.com/python/cpython/blob/main/LICENSE)      |
+| Name                                                                    | License                                                                  |
+|:-----------------------------------------------------------------------:|:------------------------------------------------------------------------:|
+| [certbot](https://github.com/certbot/certbot)                           | [Apache 2.0](https://github.com/certbot/certbot/blob/master/LICENSE.txt) |
+| [datetime](https://github.com/python/cpython/blob/main/Lib/datetime.py) | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
+| [hashlib](https://github.com/python/cpython/blob/main/Lib/hashlib.py)   | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
+| [json](https://github.com/python/cpython/blob/main/Lib/json)            | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
+| [logging](https://github.com/python/cpython/blob/main/Lib/logging)      | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
+| [pytz](https://github.com/stub42/pytz)                                  | [MIT](https://github.com/stub42/pytz/blob/master/LICENSE.txt)            |
+| [re](https://github.com/python/cpython/blob/main/Lib/re)                | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
+| [requests](https://github.com/psf/requests)                             | [Apache 2.0](https://github.com/psf/requests/blob/main/LICENSE)          |
+| [setuptools](https://github.com/pypa/setuptools)                        | [MIT](https://github.com/pypa/setuptools/blob/main/LICENSE)              |
+| [typing](https://github.com/python/cpython/blob/main/Lib/typing.py)     | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
