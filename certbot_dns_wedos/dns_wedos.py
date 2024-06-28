@@ -38,7 +38,7 @@ class _WedosClient():
             if 'ID' not in record: continue
             if record['rdata'] == validation: return record['ID']
         return -1
-        
+
     def _handlerResponse(self, response: requests.post) -> dict:
         if not response.ok:
             raise errors.PluginError('Cannot access the Wedos API, '
@@ -58,7 +58,7 @@ class _WedosClient():
             raise errors.PluginError('Error code received from Wedos API, The error '
                                     f'code is {response["response"]["code"]}')
         return response
-        
+
     def _clientSend(self, command: str, requirement: dict = None) -> dict:
         time = datetime.now(pytz.timezone('Europe/Prague')).strftime('%H')
         auth = self.username + self.password + time
@@ -159,6 +159,6 @@ class Authenticator(DNSAuthenticator):
 
     def _get_wedos_client(self) -> _WedosClient:
         return _WedosClient(
-            self.credentials.conf('user'), 
+            self.credentials.conf('user'),
             self.credentials.conf('auth')
         )
