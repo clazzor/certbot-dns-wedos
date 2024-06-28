@@ -65,29 +65,7 @@ dns_wedos_auth=examplepassword
 
 * Values are written after an equal&#160;sign&#160;`=`. For values with spaces, such as `hello world`, a space can be used.
 * For the ini file you should apply permission: `chmod 600 file.ini`
-
-## Used Modules/Libraries
-I just want to mention which modules/libraries this plugin uses for better debugging of errors in the future, in case any occur.
-
-<table>
-<tr><td>
-| Name                                                                    | License                                                                  |
-|:-----------------------------------------------------------------------:|:------------------------------------------------------------------------:|
-| [certbot](https://github.com/certbot/certbot)                           | [Apache 2.0](https://github.com/certbot/certbot/blob/master/LICENSE.txt) |
-| [datetime](https://github.com/python/cpython/blob/main/Lib/datetime.py) | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
-| [hashlib](https://github.com/python/cpython/blob/main/Lib/hashlib.py)   | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
-| [json](https://github.com/python/cpython/blob/main/Lib/json)            | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
-| [logging](https://github.com/python/cpython/blob/main/Lib/logging)      | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
-</td><td>
-| Name                                                                    | License                                                                  |
-|:-----------------------------------------------------------------------:|:------------------------------------------------------------------------:|
-| [pytz](https://github.com/stub42/pytz)                                  | [MIT](https://github.com/stub42/pytz/blob/master/LICENSE.txt)            |
-| [re](https://github.com/python/cpython/blob/main/Lib/re)                | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
-| [requests](https://github.com/psf/requests)                             | [Apache 2.0](https://github.com/psf/requests/blob/main/LICENSE)          |
-| [setuptools](https://github.com/pypa/setuptools)                        | [MIT](https://github.com/pypa/setuptools/blob/main/LICENSE)              |
-| [typing](https://github.com/python/cpython/blob/main/Lib/typing.py)     | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               |
-</td></tr>
-</table>
+---
 
 ## Errors
 If an error occurs, Certbot will display the type of error that has occurred.  
@@ -95,3 +73,13 @@ If an error occurs, Certbot will display the type of error that has occurred.
 * If you encounter an [HTTP error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) related to communication with WAPI, you will receive an [HTTP error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
 * If it is an error related to communication between the plugin and WAPI, you will receive a [return code](https://en.wikipedia.org/wiki/Exit_status). Wedos has a list of error codes on their website, which you can access through this link [WAPI list of return codes](https://kb.wedos.com/en/wapi-api-interface/wapi-manual/#return-codes).
 
+## Used Modules/Libraries
+I just want to mention which modules/libraries this plugin uses for better debugging of errors in the future, in case any occur.
+
+| Name                                                                    | License                                                                  | Name                                                                | License                                                         |
+|:-----------------------------------------------------------------------:|:------------------------------------------------------------------------:|:-------------------------------------------------------------------:|:---------------------------------------------------------------:|
+| [certbot](https://github.com/certbot/certbot)                           | [Apache 2.0](https://github.com/certbot/certbot/blob/master/LICENSE.txt) | [pytz](https://github.com/stub42/pytz)                              | [MIT](https://github.com/stub42/pytz/blob/master/LICENSE.txt)   |
+| [datetime](https://github.com/python/cpython/blob/main/Lib/datetime.py) | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               | [re](https://github.com/python/cpython/blob/main/Lib/re)            | [PSF](https://github.com/python/cpython/blob/main/LICENSE)      |
+| [hashlib](https://github.com/python/cpython/blob/main/Lib/hashlib.py)   | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               | [requests](https://github.com/psf/requests)                         | [Apache 2.0](https://github.com/psf/requests/blob/main/LICENSE) |
+| [json](https://github.com/python/cpython/blob/main/Lib/json)            | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               | [setuptools](https://github.com/pypa/setuptools)                    | [MIT](https://github.com/pypa/setuptools/blob/main/LICENSE)     |
+| [logging](https://github.com/python/cpython/blob/main/Lib/logging)      | [PSF](https://github.com/python/cpython/blob/main/LICENSE)               | [typing](https://github.com/python/cpython/blob/main/Lib/typing.py) | [PSF](https://github.com/python/cpython/blob/main/LICENSE)      |
