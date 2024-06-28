@@ -9,67 +9,68 @@ For the functionality of this plugin, you will need to install these programs/so
 | [python](https://github.com/python/cpython)    | [Link](https://packaging.python.org/en/latest/tutorials/installing-packages) | >= 3.8    |
 | [pip](https://github.com/pypa/pip/)            | [Link](https://pip.pypa.io/en/stable/installation)                           | >= 19.2.3 |
 | [certbot](https://github.com/certbot/certbot/) | [Link](https://certbot.eff.org/instructions)                                 | >= 2.8.0  |
-
 > _Note that in theory, even an older version should work, but it has not been tested._
 
+### WAPI
 You will also **need to have WAPI activated** for communication between Wedos and the plugin. To activate WAPI, you can read the article from Wedos, available at this link [WAPI activation and settings](https://kb.wedos.com/en/wapi-api-interface/wapi-activation-and-settings).
 > **CAUTION: Please note that the IP address of the server where Certbot with the plugin will be located must be allowed on WAPI, otherwise it will not work.**
 
 ### The Install
-#### From `pip`
+#### With pip (recommend)
 ```commandline
-pip install certbot-dns-wedos
+pip install certbot-dns-wedos --break-system-packages
 ```
+---
 
-#### Manual with `git`
+#### From source
 ```commandline
 git clone https://github.com/clazzor/certbot-dns-wedos.git
-pip3 install ./certbot-dns-wedos --break-system-packages
+pip install ./certbot-dns-wedos --break-system-packages
 ```
-
 After installation, the created folders may be deleted.
-
 ```commandline
 rm -r certbot-dns-wedos
 ```
 
-
 ## Setup
-### Certbot Command
-The basic structure of the command is the same as with all other plugins, we define the plugin, propagation-seconds, credentials file and domains, like this:
+### Arguments 
+| Name                                                               | Required           | Description                                                                          |
+|:-------------------------------------------------------------------|:------------------:|:-------------------------------------------------------------------------------------|
+| &#x2011;&#x2011;dns&#x2011;wedos&#x2011;propagation&#x2011;seconds | :x:                | Seconds to wait for DNS propagation before verifying DNS record with ACME server.    |
+| &#x2011;&#x2011;dns&#x2011;wedos&#x2011;credentials                | :white_check_mark: | The complete path to the INI file for credentials containing data for authorization. |
+> The default value of `propagation-seconds` is 360, if there is a problem with validation, increase the number. The lower limit is 300.
+
+### Command example
+The basic structure of the command is the same as with all other cerbot plugins, we define which plugin to use, propagation-seconds, credentials file and domains, like this:
 ```commandline
 certbot certonly \
 --authenticator dns-wedos \
---dns-wedos-propagation‑seconds 420 \
+--dns-wedos-propagation‑seconds 390 \
 --dns-wedos-credentials /path/to/the/file.ini \
--d sub.example.com
+-d example.com -d *.example.com
 ```
 
----
-### Arguments and credentials
-
-| Name                       | Argument                    | Credential       | Description                                                                       |
-|:---------------------------|:---------------------------:|:----------------:|:----------------------------------------------------------------------------------|
-| propagation&#x2011;seconds | Optional (default&#160;360) | Not&#160;allowed | Seconds to wait for DNS propagation before verifying DNS record with ACME server. |
-| credentials                | Required                    | Not&#160;allowed | The complete path to the INI file for credentials.                                |
-| user                       | Not&#160;allowed            | Required         | The user (username) for WAPI.                                                     |
-| auth                       | Not&#160;allowed            | Required         | The auth (password) for WAPI                                                      |
-* The prefix `dns_wedos_` is required in arguments and credentials file 
----
 ### Credentials file
-The `/path/to/the/file.ini` file:
+| Name           | Required           | Description                   |
+|:---------------|:------------------:|:------------------------------|
+| dns_wedos_user | :white_check_mark: | The user (email) for WAPI.    |
+| dns_wedos_auth | :white_check_mark: | The auth (password) for WAPI. |
+
+This is what the credentials file for wedos plugin should look like.
 ```commandline
 dns_wedos_user=user@example.com
 dns_wedos_auth=examplepassword
 ```
-
 * Values are written after an equal&#160;sign&#160;`=`. For values with spaces, such as `hello world`, a space can be used.
-* For the ini file you should apply permission: `chmod 600 file.ini`
----
+* **For the ini file you should apply permission: `chmod 600 file.ini` for security reason.**
+
+## Reloading certificates on services
+Usually services like haproxy, nginx, apache and more need to restart to retrieve a new certificate. 
+For this is used the `deploy hook`.<br>
+More information on this repository: [Load a new certificate after a successful renewal](https://github.com/clazzor/deploy-service-restart)
 
 ## Errors
 If an error occurs, Certbot will display the type of error that has occurred.  
-* If 420 seconds
 * If you encounter an [HTTP error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) related to communication with WAPI, you will receive an [HTTP error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
 * If it is an error related to communication between the plugin and WAPI, you will receive a [return code](https://en.wikipedia.org/wiki/Exit_status). Wedos has a list of error codes on their website, which you can access through this link [WAPI list of return codes](https://kb.wedos.com/en/wapi-api-interface/wapi-manual/#return-codes).
 
