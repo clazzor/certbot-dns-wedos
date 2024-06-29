@@ -18,14 +18,14 @@ You will also **need to have WAPI activated** for communication between Wedos an
 ### The Install
 #### With pip (recommend)
 ```commandline
-pip install certbot-dns-wedos --break-system-packages
+sudo pip install certbot-dns-wedos
 ```
 ---
 
 #### From source
 ```commandline
 git clone https://github.com/clazzor/certbot-dns-wedos.git
-pip install ./certbot-dns-wedos --break-system-packages
+sudo pip install ./certbot-dns-wedos
 ```
 After installation, the created folders may be deleted.
 ```commandline
