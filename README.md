@@ -16,12 +16,16 @@ You will also **need to have WAPI activated** for communication between Wedos an
 > **CAUTION: Please note that the IP address of the server where Certbot with the plugin will be located must be allowed on WAPI, otherwise it will not work.**
 
 ### The Install
+~~#### With snap (recommend)~~ soon perhaps ...
+```commandline
+snap install certbot-dns-wedos
+```
+---
 #### With pip (recommend)
 ```commandline
 sudo pip install certbot-dns-wedos
 ```
 ---
-
 #### From source
 ```commandline
 git clone https://github.com/clazzor/certbot-dns-wedos.git
