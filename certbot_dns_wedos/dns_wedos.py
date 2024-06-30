@@ -10,6 +10,7 @@ from certbot.plugins.dns_common import CredentialsConfiguration, DNSAuthenticato
 
 logger = logging.getLogger(__name__)
 URL = 'https://api.wedos.com/wapi/json'
+WEDOS_CODE = 'https://kb.wedos.com/en/wapi-api-interface/wapi-manual/#return-codes'
 
 
 def convertDomain(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -56,7 +57,8 @@ class _WedosClient():
                                      'response from Wedos API.')
         if response['response']['code'] >= 2000:
             raise errors.PluginError('Error code received from Wedos API, The error '
-                                    f'code is {response["response"]["code"]}')
+                                    f'code is {response["response"]["code"]}, '
+                                    f'you can find what the code mean there: {WEDOS_CODE}')
         return response
 
     def _clientSend(self, command: str, requirement: dict = None) -> dict:
