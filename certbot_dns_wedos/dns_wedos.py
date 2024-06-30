@@ -58,7 +58,7 @@ class _WedosClient():
         if response['response']['code'] >= 2000:
             raise errors.PluginError('Error code received from Wedos API, The error '
                                     f'code is {response["response"]["code"]}, '
-                                    f'you can find what the code mean there: {WEDOS_CODE}')
+                                    f'you can find what the code mean here: {WEDOS_CODE}')
         return response
 
     def _clientSend(self, command: str, requirement: dict = None) -> dict:
