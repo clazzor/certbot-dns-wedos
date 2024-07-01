@@ -14,11 +14,6 @@ architectures:
   - build-on: armhf
 
 parts:
-  install-lib:
-    plugin: nil
-    override-pull: |
-      apt update
-      apt install build-essential libssl-dev libffi-dev python3-dev cargo clang pkg-config
   install-rust:
     plugin: nil
     override-pull: |
@@ -45,7 +40,7 @@ parts:
       - clang
       - pkg-config
       - python3-dev
-    after: [install-rust, install-lib]
+    after: [install-rust]
   certbot-metadata:
     plugin: dump
     source: .
