@@ -4,8 +4,8 @@ summary: Wedos DNS Authenticator plugin for Certbot
 description: Wedos DNS Authenticator plugin for Certbot
 website: https://github.com/clazzor/certbot-dns-wedos
 license: Apache-2.0
-#base: core22
-base: core24
+base: core22
+#base: core24
 grade: stable
 confinement: strict
 adopt-info: certbot-dns-wedos
