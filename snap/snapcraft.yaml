@@ -9,11 +9,16 @@ grade: stable
 confinement: strict
 adopt-info: certbot-dns-wedos
 architectures:
-  - build-on: amd64
-  - build-on: arm64
+#  - build-on: amd64
+#  - build-on: arm64
   - build-on: armhf
 
 parts:
+  install-lib:
+    plugin: nil
+    override-pull: |
+      apt update
+      apt install build-essential libssl-dev libffi-dev python3-dev
   certbot-dns-wedos:
     plugin: python
     source: .
