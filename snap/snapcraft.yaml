@@ -41,9 +41,9 @@ parts:
       - build-essential
       - libffi-dev
 #      - libssl-dev
- #     - cargo
-  #    - clang
-   #   - pkg-config
+      - cargo
+#      - clang
+      - pkg-config
       - python3-dev
 #    after: [install-rust]
   certbot-metadata:
