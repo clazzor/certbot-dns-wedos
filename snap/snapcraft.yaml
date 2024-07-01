@@ -40,9 +40,9 @@ parts:
 #      - git
       - build-essential
       - libffi-dev
-#      - libssl-dev
+      - libssl-dev
       - cargo
-#      - clang
+      - clang
       - pkg-config
       - python3-dev
 #    after: [install-rust]
