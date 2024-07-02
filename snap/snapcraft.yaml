@@ -36,7 +36,7 @@ parts:
     build-environment:
       - SNAP_BUILD: "True"
     build-packages:
-      - gcc
+#      - gcc
 #      - git
 #      - build-essential
       - libffi-dev
