@@ -43,7 +43,7 @@ parts:
       - libssl-dev
       - cargo
 #      - clang
-      - pkg-config
+#      - pkg-config
 #      - python3-dev
 #    after: [install-rust]
   certbot-metadata:
