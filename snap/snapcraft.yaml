@@ -29,8 +29,8 @@ parts:
       - SNAP_BUILD: "True"
     build-packages:
       - libffi-dev
-#      - libssl-dev
-      - cargo
+      - libssl-dev
+#      - cargo
       - pkg-config
   certbot-metadata:
     plugin: dump
