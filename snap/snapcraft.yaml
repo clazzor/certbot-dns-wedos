@@ -39,7 +39,7 @@ parts:
       - gcc
 #      - git
 #      - build-essential
-      - libffi-dev
+#      - libffi-dev
       - libssl-dev
       - cargo
 #      - clang
