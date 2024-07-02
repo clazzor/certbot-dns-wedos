@@ -28,7 +28,7 @@ parts:
     build-environment:
       - SNAP_BUILD: "True"
     build-packages:
-      - libffi-dev
+#      - libffi-dev
       - libssl-dev
       - cargo
       - pkg-config
