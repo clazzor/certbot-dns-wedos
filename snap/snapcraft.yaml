@@ -36,15 +36,15 @@ parts:
     build-environment:
       - SNAP_BUILD: "True"
     build-packages:
-      - gcc
+#      - gcc
 #      - git
-      - build-essential
-      - libffi-dev
+#      - build-essential
+#      - libffi-dev
       - libssl-dev
-      - cargo
+#      - cargo
 #      - clang
       - pkg-config
-      - python3-dev
+#      - python3-dev
 #    after: [install-rust]
   certbot-metadata:
     plugin: dump
