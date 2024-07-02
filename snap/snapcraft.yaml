@@ -19,6 +19,13 @@ architectures:
   - build-on: armhf
 
 parts:
+  install-dependencies:
+    plugin: nil
+    override-pull: |
+      if [ "$SNAP_ARCH" = "armhf" ]; then
+        apt update
+        apt -y install libffi-dev libssl-dev cargo pkg-config
+      fi
   certbot-dns-wedos:
     plugin: python
     source: .
@@ -27,11 +34,12 @@ parts:
         snapcraftctl set-version `grep ^version $SNAPCRAFT_PART_SRC/setup.py | cut -f2 -d= | tr -d '"[:space:]'`
     build-environment:
       - SNAP_BUILD: "True"
-    build-packages:
-      - libffi-dev
-      - libssl-dev
-      - cargo
+#    build-packages:
+#      - libffi-dev
+#      - libssl-dev
+#      - cargo
 #      - pkg-config
+    after: [install-dependencies]
   certbot-metadata:
     plugin: dump
     source: .
