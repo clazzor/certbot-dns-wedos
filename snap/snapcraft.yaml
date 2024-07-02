@@ -30,8 +30,8 @@ parts:
     build-packages:
       - libffi-dev
       - libssl-dev
-#      - cargo
-      - pkg-config
+      - cargo
+#      - pkg-config
   certbot-metadata:
     plugin: dump
     source: .
