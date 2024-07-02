@@ -40,7 +40,7 @@ parts:
 #      - git
       - build-essential
       - libffi-dev
-#      - libssl-dev
+      - libssl-dev
       - cargo
 #      - clang
       - pkg-config
