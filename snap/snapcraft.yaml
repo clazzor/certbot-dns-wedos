@@ -41,7 +41,7 @@ parts:
 #      - build-essential
       - libffi-dev
       - libssl-dev
-#      - cargo
+      - cargo
 #      - clang
       - pkg-config
 #      - python3-dev
