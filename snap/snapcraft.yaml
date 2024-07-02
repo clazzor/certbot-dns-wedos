@@ -19,14 +19,6 @@ architectures:
   - build-on: armhf
 
 parts:
-#  install-rust:
-#    plugin: nil
-#    override-pull: |
-#      if [ "$SNAP_ARCH" = "armhf" ]; then
-#        apt-get update
-#        apt-get -y install curl
-#        curl https://sh.rustup.rs -sSf | sh -s -- -y
-#      fi
   certbot-dns-wedos:
     plugin: python
     source: .
@@ -36,16 +28,10 @@ parts:
     build-environment:
       - SNAP_BUILD: "True"
     build-packages:
-#      - gcc
-#      - git
-#      - build-essential
       - libffi-dev
       - libssl-dev
       - cargo
-#      - clang
-#      - pkg-config
-#      - python3-dev
-#    after: [install-rust]
+      - pkg-config
   certbot-metadata:
     plugin: dump
     source: .
