@@ -45,11 +45,6 @@ setup(
         "Topic :: System :: Systems Administration",
         "Topic :: Utilities",
     ],
-    options={
-        'bdist_wheel': {
-            'universal':'1'
-        }
-    },
     packages=find_packages(),
     include_package_data=True,
     install_requires=install_requires,
