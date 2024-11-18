@@ -1,10 +1,10 @@
 import hashlib, pytz, re
-from datetime import datetime 
+from datetime import datetime
 
 import requests, json
 from typing import Any, Callable, Optional
 
-import logging 
+import logging
 from certbot import errors
 from certbot.plugins.dns_common import CredentialsConfiguration, DNSAuthenticator
 
@@ -58,6 +58,7 @@ class _WedosClient():
         if response['response']['code'] >= 2000:
             raise errors.PluginError('Error code received from Wedos API, The error '
                                     f'code is {response["response"]["code"]}, '
+                                    f'details {response["response"]}'
                                     f'you can find what the code mean here: {WEDOS_CODE}')
         return response
 
@@ -133,7 +134,7 @@ class Authenticator(DNSAuthenticator):
         if not auth:
             raise errors.PluginError('Missing parameter AUTH (password) for the Wedos API.'
                                      ' [dns_wedos_auth=ExamplePassword]')
-        if propagation_seconds < 300: 
+        if propagation_seconds < 300:
             raise errors.PluginError('Propagation seconds cannot be lower than 300 seconds.'
                                      ' (Recommended propagation time is 420 seconds)')
         if '@' not in user:
