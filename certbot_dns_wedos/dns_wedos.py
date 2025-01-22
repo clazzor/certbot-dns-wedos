@@ -2,6 +2,7 @@ import hashlib, pytz, re
 from datetime import datetime
 
 import requests, json
+from requests.exceptions import JSONDecodeError, RequestException
 from typing import Any, Callable, Optional
 
 import logging
@@ -11,7 +12,7 @@ from certbot.plugins.dns_common import CredentialsConfiguration, DNSAuthenticato
 logger = logging.getLogger(__name__)
 URL = 'https://api.wedos.com/wapi/json'
 WEDOS_CODE = 'https://kb.wedos.com/en/wapi-api-interface/wapi-manual/#return-codes'
-
+TTL = 300
 
 def convertDomain(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrap(self, domain: str, validation_name: str, validation: str) -> Any:
@@ -25,6 +26,7 @@ def convertDomain(func: Callable[..., Any]) -> Callable[..., Any]:
 class _WedosClient():
     def __init__(self, username: str, password: str) -> None:
         self.url = URL
+        self.ttl = TTL
         self.username = username
         self.password = hashlib.sha1(password.encode('ascii')).hexdigest()
         self.session = requests.Session()
@@ -40,15 +42,12 @@ class _WedosClient():
             if record['rdata'] == validation: return record['ID']
         return -1
 
-    def _handlerResponse(self, response: requests.post) -> dict:
-        if not response.ok:
-            raise errors.PluginError('Cannot access the Wedos API, '
-                                    f'HTTP error code is {response.status_code}')
+    def _handlerWedos(self, response: requests.post) -> dict:
         try:
             response = response.json()
-        except json.JSONDecodeError as e:
+        except JSONDecodeError as err:
             raise errors.PluginError('Error occurred while parsing the response '
-                                     f'from Wedos API into JSON format: {e}')
+                                     f'from Wedos API into JSON format: {err}')
         if 'response' not in response:
             raise errors.PluginError('Unknown error occurred while receiving '
                                      'response from Wedos API.')
@@ -62,6 +61,16 @@ class _WedosClient():
                                     f'you can find what the code mean here: {WEDOS_CODE}')
         return response
 
+    def _handlerPost(self, url: str, data: dict, headers: dict) -> dict:
+        response = {}
+        try:
+            response = self.session.post(url, data=data, headers=headers, timeout=5)
+            response.raise_for_status()
+        except RequestException as err:
+            raise errors.PluginError(f'Cannot access the Wedos API, Error: {err}')
+
+        return self._handlerWedos(response)
+    
     def _clientSend(self, command: str, requirement: dict = None) -> dict:
         time = datetime.now(pytz.timezone('Europe/Prague')).strftime('%H')
         auth = self.username + self.password + time
@@ -76,9 +85,8 @@ class _WedosClient():
 
         data = {'request': json.dumps({'request': data})}
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-        response = self.session.post(self.url, data=data, headers=headers)
 
-        return self._handlerResponse(response)
+        return self._handlerPost(self.url, data, headers)
 
     @convertDomain
     def add_txt_record(self, domain: str, validation_name: str, validation: str) -> None:
@@ -86,7 +94,7 @@ class _WedosClient():
             'domain': domain,
             'name': validation_name,
             'type': 'TXT',
-            'ttl': 300,
+            'ttl': self.ttl,
             'rdata': validation
         }
 
