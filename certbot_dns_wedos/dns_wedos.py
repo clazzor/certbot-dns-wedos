@@ -122,7 +122,7 @@ class Authenticator(DNSAuthenticator):
 
     @classmethod
     def add_parser_arguments(cls, add: Callable[..., None],
-                             default_propagation_seconds: int = 420) -> None:
+                             default_propagation_seconds: int = 450) -> None:
         super().add_parser_arguments(add, default_propagation_seconds)
         add('credentials', help='Wedos credentials INI file.')
 
@@ -144,7 +144,7 @@ class Authenticator(DNSAuthenticator):
                                      ' [dns_wedos_auth=ExamplePassword]')
         if propagation_seconds < 300:
             raise errors.PluginError('Propagation seconds cannot be lower than 300 seconds.'
-                                     ' (Recommended propagation time is 420 seconds)')
+                                     ' (Recommended propagation time is 450 seconds)')
         if '@' not in user:
             raise errors.PluginError('Wrong parameter USER (email) for the Wedos API.')
         if len(auth) < 8:

@@ -5,7 +5,7 @@ the WAPI. With this plugin, you can generate wildcard SSL certificates.
 
 Basic usage:
  certbot certonly --authenticator dns-wedos \
- --dns-wedos-propagation-seconds 420 \
+ --dns-wedos-propagation-seconds 450 \
  --dns-wedos-credentials /path/to/the/file.ini \
  -d example.com -d *.example.com
 
