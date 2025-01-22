@@ -71,7 +71,6 @@ dns_wedos_auth=examplepassword
 ## Reloading certificates on services
 Usually services like haproxy, nginx, apache and more need to restart to retrieve a new certificate. 
 For this is used the `deploy hook`.<br>
-More information on this repository: [Load a new certificate after a successful renewal](https://github.com/clazzor/deploy-service-restart)
 
 ## Errors
 If an error occurs, Certbot will display the type of error that has occurred.  
