@@ -1,3 +1,7 @@
+URL = 'https://api.wedos.com/wapi/json'
+WEDOS_CODE = 'https://kb.wedos.com/en/wapi-api-interface/wapi-manual/#return-codes'
+TTL = 300
+
 """
 This plugin uses the Certbot DNS-01 challenge to create and delete
 TXT records on the Wedos domain server using the Wedos API called

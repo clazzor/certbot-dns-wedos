@@ -1,3 +1,5 @@
+from certbot_dns_wedos import URL, WEDOS_CODE, TTL
+
 import hashlib, pytz, re
 from datetime import datetime
 
@@ -10,9 +12,6 @@ from certbot import errors
 from certbot.plugins.dns_common import CredentialsConfiguration, DNSAuthenticator
 
 logger = logging.getLogger(__name__)
-URL = 'https://api.wedos.com/wapi/json'
-WEDOS_CODE = 'https://kb.wedos.com/en/wapi-api-interface/wapi-manual/#return-codes'
-TTL = 300
 
 def convertDomain(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrap(self, domain: str, validation_name: str, validation: str) -> Any:
