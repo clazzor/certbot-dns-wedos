@@ -19,6 +19,8 @@ You will also **need to have WAPI activated** for communication between Wedos an
 #### With snap (recommend)
 ```commandline
 snap install certbot-dns-wedos
+sudo snap set certbot trust-plugin-with-root=ok
+sudo snap connect certbot:plugin certbot-dns-wedos
 ```
 ---
 #### With pip
