@@ -3,14 +3,15 @@ summary: Wedos DNS Authenticator plugin for Certbot
 description: Wedos DNS Authenticator plugin for Certbot
 website: https://github.com/clazzor/certbot-dns-wedos
 license: Apache-2.0
-base: core22
+base: core24
 grade: stable
 confinement: strict
 adopt-info: certbot-dns-wedos
-architectures:
-  - build-on: amd64
-  - build-on: arm64
-  - build-on: armhf
+
+platforms:
+  amd64:
+  arm64:
+  armhf:
 
 parts:
   install-dependencies:
@@ -28,11 +29,6 @@ parts:
         snapcraftctl set-version `grep ^version $SNAPCRAFT_PART_SRC/setup.py | cut -f2 -d= | tr -d '"[:space:]'`
     build-environment:
       - SNAP_BUILD: "True"
-#    build-packages:
-#      - libffi-dev
-#      - libssl-dev
-#      - cargo
-#      - pkg-config
     after: [install-dependencies]
   certbot-metadata:
     plugin: dump
@@ -47,7 +43,7 @@ slots:
     interface: content
     content: certbot-1
     read:
-      - $SNAP/lib/python3.8/site-packages
+      - $SNAP/lib/python3.12/site-packages
 
 plugs:
   certbot-metadata:

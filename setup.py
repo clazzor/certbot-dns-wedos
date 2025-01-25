@@ -4,8 +4,8 @@ from setuptools import find_packages
 version = "2.3"
 
 install_requires = [
-    "certbot>=2.8.0",
-    "acme>=2.8.0",
+    "certbot>=3.0.0",
+    "acme>=3.0.0",
     "setuptools",
     "requests",
     "pytz",
@@ -23,7 +23,7 @@ setup(
     url="https://github.com/clazzor/certbot-dns-wedos",
     author="Clazzor",
     license="Apache License 2.0",
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Plugins",
@@ -32,7 +32,6 @@ setup(
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
