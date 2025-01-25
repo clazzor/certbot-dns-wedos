@@ -1,7 +1,7 @@
 from setuptools import setup
 from setuptools import find_packages
 
-version = "2.3"
+version = "2.4"
 
 install_requires = [
     "certbot>=3.0.0",
@@ -11,7 +11,7 @@ install_requires = [
     "pytz",
 ]
 
-with open("README.md") as f:
+with open("README.md", encoding="utf-8") as f:
     long_description = f.read()
 
 setup(

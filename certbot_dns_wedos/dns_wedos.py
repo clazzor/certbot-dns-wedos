@@ -1,24 +1,28 @@
-from certbot_dns_wedos import URL, WEDOS_CODE, TTL
+"""Wedos DNS Authenticator plugin for Certbot"""
 
-import hashlib, pytz, re
+import hashlib
+import re
+import json
+import logging
 from datetime import datetime
-
-import requests, json
-from requests.exceptions import JSONDecodeError, RequestException
 from typing import Any, Callable, Optional
 
-import logging
+import pytz
+import requests
+from requests.exceptions import JSONDecodeError, RequestException
+
 from certbot import errors
 from certbot.plugins.dns_common import CredentialsConfiguration, DNSAuthenticator
+from certbot_dns_wedos import URL, WEDOS_CODE, TTL
 
 logger = logging.getLogger(__name__)
 
-def convertDomain(func: Callable[..., Any]) -> Callable[..., Any]:
+def convert_domain(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrap(self, domain: str, validation_name: str, validation: str) -> Any:
-        regex = '([a-zA-Z0-9-]+)(\.[a-zA-Z]{2,5})?(\.[a-zA-Z]+$)'
-        pureDomain = re.search(regex,  domain).group(0)
-        subDomain = re.sub('\.'+regex, '', validation_name)
-        return func(self, pureDomain, subDomain, validation)
+        regex = r'([a-zA-Z0-9-]+)(\.[a-zA-Z]{2,5})?(\.[a-zA-Z]+$)'
+        pure_domain = re.search(regex,  domain).group(0)
+        sub_domain = re.sub(r'\.' + regex, '', validation_name)
+        return func(self, pure_domain, sub_domain, validation)
     return wrap
 
 
@@ -30,37 +34,43 @@ class _WedosClient():
         self.password = hashlib.sha1(password.encode('ascii')).hexdigest()
         self.session = requests.Session()
 
-    def _findTxtID(self, data: dict, validation: str) -> int:
-        if 'data' not in data['response']: return -1
-        if 'row' not in data['response']['data']: return -1
+    def _find_txt_id(self, data: dict, validation: str) -> int:
+        if 'data' not in data['response']:
+            return -1
+        if 'row' not in data['response']['data']:
+            return -1
         data = data['response']['data']['row']
 
         for record in data:
-            if 'rdata' not in record: continue
-            if 'ID' not in record: continue
-            if record['rdata'] == validation: return record['ID']
+            if 'rdata' not in record:
+                continue
+            if 'ID' not in record:
+                continue
+            if record['rdata'] == validation:
+                return record['ID']
         return -1
 
-    def _handlerWedos(self, response: requests.post) -> dict:
+    def _handler_wedos(self, response: requests.post) -> dict:
+        data = {}
         try:
-            response = response.json()
+            data = response.json()
         except JSONDecodeError as err:
             raise errors.PluginError('Error occurred while parsing the response '
                                      f'from Wedos API into JSON format: {err}')
-        if 'response' not in response:
+        if 'response' not in data:
             raise errors.PluginError('Unknown error occurred while receiving '
                                      'response from Wedos API.')
-        if 'code' not in response['response']:
+        if 'code' not in data['response']:
             raise errors.PluginError('Missing WAPI Error code in the '
                                      'response from Wedos API.')
-        if response['response']['code'] >= 2000:
+        if data['response']['code'] >= 2000:
             raise errors.PluginError('Error code received from Wedos API, The error '
-                                    f'code is {response["response"]["code"]}, '
-                                    f'details {response["response"]}'
+                                    f'code is {data["response"]["code"]}, '
+                                    f'details {data["response"]}'
                                     f'you can find what the code mean here: {WEDOS_CODE}')
-        return response
+        return data
 
-    def _handlerPost(self, url: str, data: dict, headers: dict) -> dict:
+    def _handler_post(self, url: str, data: dict, headers: dict) -> dict:
         response = {}
         try:
             response = self.session.post(url, data=data, headers=headers, timeout=5)
@@ -68,9 +78,9 @@ class _WedosClient():
         except RequestException as err:
             raise errors.PluginError(f'Cannot access the Wedos API, Error: {err}')
 
-        return self._handlerWedos(response)
-    
-    def _clientSend(self, command: str, requirement: dict = None) -> dict:
+        return self._handler_wedos(response)
+
+    def client_send(self, command: str, requirement: dict = None) -> dict:
         time = datetime.now(pytz.timezone('Europe/Prague')).strftime('%H')
         auth = self.username + self.password + time
         auth = hashlib.sha1(auth.encode('ascii')).hexdigest()
@@ -85,9 +95,9 @@ class _WedosClient():
         data = {'request': json.dumps({'request': data})}
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
-        return self._handlerPost(self.url, data, headers)
+        return self._handler_post(self.url, data, headers)
 
-    @convertDomain
+    @convert_domain
     def add_txt_record(self, domain: str, validation_name: str, validation: str) -> None:
         dns_row_add = {
             'domain': domain,
@@ -97,20 +107,21 @@ class _WedosClient():
             'rdata': validation
         }
 
-        self._clientSend('dns-row-add', dns_row_add)
-        self._clientSend('dns-domain-commit', {'name': domain})
+        self.client_send('dns-row-add', dns_row_add)
+        self.client_send('dns-domain-commit', {'name': domain})
 
-    @convertDomain
-    def del_txt_record(self, domain: str, validation_name: str, validation: str) -> None:
-        dns_records = self._clientSend('dns-rows-list', {'domain': domain})
-        txtID = self._findTxtID(dns_records,  validation)
+    @convert_domain
+    def del_txt_record(self, domain: str, _validation_name: str, validation: str) -> None:
+        dns_records = self.client_send('dns-rows-list', {'domain': domain})
+        txt_id = self._find_txt_id(dns_records, validation)
 
-        if txtID == -1:
-            logger.warn('Could not find the created TXT record. It is recommended to check it.')
+        if txt_id == -1:
+            logger.warning('Could not find the created TXT record. '
+                           'It is recommended to check it.')
             return
 
-        self._clientSend('dns-row-delete', {'domain': domain, 'row_id': txtID})
-        self._clientSend('dns-domain-commit', {'name': domain})
+        self.client_send('dns-row-delete', {'domain': domain, 'row_id': txt_id})
+        self.client_send('dns-domain-commit', {'name': domain})
 
 
 class Authenticator(DNSAuthenticator):
