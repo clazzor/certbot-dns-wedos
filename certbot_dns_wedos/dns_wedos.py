@@ -54,7 +54,7 @@ class _WedosClient():
                 return record['ID']
         return -1
 
-    def _handler_wedos(self, response: requests.post) -> dict:
+    def _handler_wedos(self, response: requests.Response) -> dict:
         data = {}
         try:
             data = response.json()
