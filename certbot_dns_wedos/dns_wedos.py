@@ -1,7 +1,7 @@
 """Wedos DNS Authenticator plugin for Certbot"""
 
 import hashlib
-import re
+import tldextract
 import json
 import logging
 from datetime import datetime
@@ -19,9 +19,13 @@ logger = logging.getLogger(__name__)
 
 def convert_domain(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrap(self, domain: str, validation_name: str, validation: str) -> Any:
-        regex = r'([a-zA-Z0-9-]+)(\.[a-zA-Z]{2,5})?(\.[a-zA-Z]+$)'
-        pure_domain = re.search(regex,  domain).group(0)
-        sub_domain = re.sub(r'\.' + regex, '', validation_name)
+        extracted = tldextract.extract(domain)
+        pure_domain = f"{extracted.domain}.{extracted.suffix}"
+        sub_domain = validation_name
+        
+        if validation_name.endswith(f'.{pure_domain}'):
+            sub_domain = validation_name[:-len(pure_domain) - 1]
+
         return func(self, pure_domain, sub_domain, validation)
     return wrap
 
