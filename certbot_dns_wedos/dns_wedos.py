@@ -34,8 +34,8 @@ class _WedosClient():
     def __init__(self, username: str, password: str) -> None:
         self.url = URL
         self.ttl = TTL
-        self.username = username
-        self.password = hashlib.sha1(password.encode('ascii')).hexdigest()
+        self.username = username.strip()
+        self.password = hashlib.sha1(password.encode('utf-8')).hexdigest()
         self.session = requests.Session()
 
     def _find_txt_id(self, data: dict, validation: str) -> int:
@@ -87,7 +87,7 @@ class _WedosClient():
     def client_send(self, command: str, requirement: dict = None) -> dict:
         time = datetime.now(pytz.timezone('Europe/Prague')).strftime('%H')
         auth = self.username + self.password + time
-        auth = hashlib.sha1(auth.encode('ascii')).hexdigest()
+        auth = hashlib.sha1(auth.encode('utf-8')).hexdigest()
 
         data = {
             'user': self.username,
