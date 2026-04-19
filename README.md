@@ -6,7 +6,7 @@ This plugin uses [certbot](https://github.com/certbot/certbot)'s [dns-01 challen
 For the functionality of this plugin, you will need to install these programs/softwares.
 | Name                                           | Install                                                                      | Version   |
 |:----------------------------------------------:|:----------------------------------------------------------------------------:|:---------:|
-| [python](https://github.com/python/cpython)    | [Link](https://www.python.org/downloads/)                                    | >= 3.9.0  |
+| [python](https://github.com/python/cpython)    | [Link](https://www.python.org/downloads/)                                    | >= 3.10.0 |
 | [pip](https://github.com/pypa/pip/)            | [Link](https://pip.pypa.io/en/stable/installation)                           | >= 24.1   |
 | [certbot](https://github.com/certbot/certbot/) | [Link](https://certbot.eff.org/instructions)                                 | >= 3.0.0  |
 > _Note that in theory, even an older version should work, but it has not been tested._
