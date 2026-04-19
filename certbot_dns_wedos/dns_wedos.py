@@ -30,7 +30,7 @@ def convert_domain(func: Callable[..., Any]) -> Callable[..., Any]:
     return wrap
 
 
-class _WedosClient():
+class WedosClient():
     def __init__(self, username: str, password: str) -> None:
         self.url = URL
         self.ttl = TTL
@@ -182,8 +182,10 @@ class Authenticator(DNSAuthenticator):
             domain, validation_name, validation
         )
 
-    def _get_wedos_client(self) -> _WedosClient:
-        return _WedosClient(
-            self.credentials.conf('user'),
-            self.credentials.conf('auth')
-        )
+    def _get_wedos_client(self) -> WedosClient:
+        if not hasattr(self, "_client_instance"):
+            self._client_instance = WedosClient(
+                self.credentials.conf('user'),
+                self.credentials.conf('auth')
+            )
+        return self._client_instance
