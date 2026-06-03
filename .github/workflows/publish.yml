@@ -17,26 +17,26 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/certbot-dns-wedos
+      url: https://pypi.org/p/certbot-dns-wedos-kolecko
     permissions:
       id-token: write
 
     steps:
-    - name: Check out the repo
-      uses: actions/checkout@v4
+      - name: Check out the repo
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.x'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install setuptools wheel
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
 
-    - name: Build package
-      run: python setup.py sdist bdist_wheel
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel
 
-    - name: Publish package
-      uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Build package
+        run: python setup.py sdist bdist_wheel
+
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@release/v1

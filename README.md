@@ -1,4 +1,6 @@
 # CertBot DNS plugin
+> This is a fork of [clazzor/certbot-dns-wedos](https://github.com/clazzor/certbot-dns-wedos), maintained by [Matej Kolečáni](https://github.com/kolecko).
+
 This plugin uses [certbot](https://github.com/certbot/certbot)'s [dns-01 challenge](https://letsencrypt.org/docs/challenge-types) to create and delete TXT records on a [Wedos](https://www.wedos.com) domain server, thanks to the API interface called [WAPI](https://kb.wedos.com/en/kategorie/wapi-api-interface) provided by [Wedos](https://www.wedos.com). With this plugin you can make [wildcard](https://en.wikipedia.org/wiki/Wildcard_DNS_record) [ssl](https://letsencrypt.org/docs/faq/#does-let-s-encrypt-issue-wildcard-certificates). 
 
 ## Installation

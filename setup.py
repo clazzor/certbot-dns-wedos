@@ -1,5 +1,4 @@
-from setuptools import setup
-from setuptools import find_packages
+from setuptools import find_packages, setup
 
 version = "2.4"
 
@@ -15,13 +14,13 @@ with open("README.md", encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    name="certbot-dns-wedos",
+    name="certbot-dns-wedos-kolecko",
     version=version,
     description="Wedos DNS Authenticator plugin for Certbot",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/clazzor/certbot-dns-wedos",
-    author="Clazzor",
+    url="https://github.com/kolecko/certbot-dns-wedos",
+    author="Matej Kolečáni",
     license="Apache License 2.0",
     python_requires=">=3.9",
     classifiers=[
@@ -48,8 +47,6 @@ setup(
     include_package_data=True,
     install_requires=install_requires,
     entry_points={
-        "certbot.plugins": [
-            "dns-wedos = certbot_dns_wedos.dns_wedos:Authenticator"
-        ]
+        "certbot.plugins": ["dns-wedos = certbot_dns_wedos.dns_wedos:Authenticator"]
     },
 )

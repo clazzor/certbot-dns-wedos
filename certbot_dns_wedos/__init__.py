@@ -13,9 +13,10 @@ Basic file.ini example:
  dns_wedos_user=user@example.com
  dns_wedos_auth=examplepassword
 
-GitHub: https://github.com/clazzor/certbot-dns-wedos/
+GitHub: https://github.com/kolecko/certbot-dns-wedos/
+Fork of: https://github.com/clazzor/certbot-dns-wedos/
 """
 
-URL = 'https://api.wedos.com/wapi/json'
-WEDOS_CODE = 'https://kb.wedos.com/en/wapi-api-interface/wapi-manual/#return-codes'
+URL = "https://api.wedos.com/wapi/json"
+WEDOS_CODE = "https://kb.wedos.com/en/wapi-api-interface/wapi-manual/#return-codes"
 TTL = 300
