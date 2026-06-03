@@ -8,6 +8,7 @@ install_requires = [
     "setuptools",
     "requests",
     "pytz",
+    "tldextract>=5.1.0",
 ]
 
 with open("README.md", encoding="utf-8") as f:

@@ -3,12 +3,12 @@
 import hashlib
 import json
 import logging
-import re
 from datetime import datetime
 from typing import Any, Callable, Optional
 
 import pytz
 import requests
+import tldextract
 from certbot import errors
 from certbot.plugins.dns_common import CredentialsConfiguration, DNSAuthenticator
 from requests.exceptions import JSONDecodeError, RequestException
@@ -17,12 +17,14 @@ from certbot_dns_wedos import TTL, URL, WEDOS_CODE
 
 logger = logging.getLogger(__name__)
 
+# Use only the bundled Public Suffix List snapshot: no network refresh, no cache
+_extract = tldextract.TLDExtract(suffix_list_urls=())
+
 
 def convert_domain(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrap(self, domain: str, validation_name: str, validation: str) -> Any:
-        regex = r"([a-zA-Z0-9-]+)(\.[a-zA-Z]{2,5})?(\.[a-zA-Z]+$)"
-        pure_domain = re.search(regex, domain).group(0)
-        sub_domain = re.sub(r"\." + regex, "", validation_name)
+        pure_domain = _extract(domain).top_domain_under_public_suffix
+        sub_domain = _extract(validation_name).subdomain
         return func(self, pure_domain, sub_domain, validation)
 
     return wrap
@@ -88,7 +90,7 @@ class _WedosClient:
 
         return self._handler_wedos(response)
 
-    def client_send(self, command: str, requirement: dict = None) -> dict:
+    def client_send(self, command: str, requirement: Optional[dict] = None) -> dict:
         time = datetime.now(pytz.timezone("Europe/Prague")).strftime("%H")
         auth = self.username + self.password + time
         auth = hashlib.sha1(auth.encode("ascii")).hexdigest()
@@ -200,6 +202,9 @@ class Authenticator(DNSAuthenticator):
         self._get_wedos_client().del_txt_record(domain, validation_name, validation)
 
     def _get_wedos_client(self) -> _WedosClient:
-        return _WedosClient(
-            self.credentials.conf("user"), self.credentials.conf("auth")
-        )
+        credentials = self.credentials
+        assert credentials is not None
+        user = credentials.conf("user")
+        auth = credentials.conf("auth")
+        assert user is not None and auth is not None
+        return _WedosClient(user, auth)
