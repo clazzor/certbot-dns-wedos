@@ -13,7 +13,7 @@ from requests.exceptions import JSONDecodeError, RequestException
 
 from certbot import errors
 from certbot.plugins.dns_common import CredentialsConfiguration, DNSAuthenticator
-from certbot_dns_wedos import URL, WEDOS_CODE, TTL
+from certbot_dns_wedos import URL, WEDOS_CODE, DEFAULT_TTL
 
 logger = logging.getLogger(__name__)
 
@@ -31,9 +31,9 @@ def convert_domain(func: Callable[..., Any]) -> Callable[..., Any]:
 
 
 class WedosClient():
-    def __init__(self, username: str, password: str) -> None:
+    def __init__(self, username: str, password: str, ttl: int) -> None:
         self.url = URL
-        self.ttl = TTL
+        self.ttl = ttl
         self.username = username.strip()
         self.password = hashlib.sha1(password.encode('utf-8')).hexdigest()
         self.session = requests.Session()
@@ -148,6 +148,7 @@ class Authenticator(DNSAuthenticator):
     def _validate_credentials(self, credentials: CredentialsConfiguration) -> None:
         user = credentials.conf('user')
         auth = credentials.conf('auth')
+        ttl = credentials.conf('ttl')
         propagation_seconds = self.conf('propagation-seconds')
 
         if not user:
@@ -159,6 +160,8 @@ class Authenticator(DNSAuthenticator):
         if propagation_seconds < 300:
             raise errors.PluginError('Propagation seconds cannot be lower than 300 seconds.'
                                      ' (Recommended propagation time is 450 seconds)')
+        if ttl and (not ttl.isnumeric() or int(ttl) < DEFAULT_TTL):
+            raise errors.PluginError('TTL must be a whole number and bigger than 300 seconds.')
         if '@' not in user:
             raise errors.PluginError('Wrong parameter USER (email) for the Wedos API.')
         if len(auth) < 8:
@@ -186,6 +189,7 @@ class Authenticator(DNSAuthenticator):
         if not hasattr(self, "_client_instance"):
             self._client_instance = WedosClient(
                 self.credentials.conf('user'),
-                self.credentials.conf('auth')
+                self.credentials.conf('auth'),
+                int(self.credentials.conf('ttl') or DEFAULT_TTL)
             )
         return self._client_instance
