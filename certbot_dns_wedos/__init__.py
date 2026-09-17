@@ -18,4 +18,4 @@ GitHub: https://github.com/clazzor/certbot-dns-wedos/
 
 URL = 'https://api.wedos.com/wapi/json'
 WEDOS_CODE = 'https://kb.wedos.global/wapi-codes/'
-TTL = 300
+DEFAULT_TTL = 300

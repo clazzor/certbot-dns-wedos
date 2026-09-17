@@ -57,10 +57,11 @@ certbot certonly \
 ```
 
 ### Credentials file
-| Name           | Required | Description                   |
-|:---------------|:--------:|:------------------------------|
-| dns_wedos_user | ✅       | The user (email) for WAPI.    |
-| dns_wedos_auth | ✅       | The auth (password) for WAPI. |
+| Name           | Required | Description                                   |
+|:---------------|:--------:|:----------------------------------------------|
+| dns_wedos_user | ✅       | The user (email) for WAPI.                   |
+| dns_wedos_auth | ✅       | The auth (password) for WAPI.                |
+| dns_wedos_ttl  | ❌       | The TTL for the DNS record. (default: 300)   |
 
 This is what the credentials file for the wedos plugin should look like.
 ```commandline
