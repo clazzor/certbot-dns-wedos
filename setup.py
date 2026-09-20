@@ -1,56 +1,60 @@
-from setuptools import setup
-from setuptools import find_packages
+"""Package configuration for certbot-dns-wedos."""
 
-version = "2.5"
+from setuptools import find_packages, setup
+
+version = '2.5'
 
 install_requires = [
-    "certbot>=3.0.0",
-    "acme>=3.0.0",
-    "setuptools",
-    "requests",
-    "pytz",
-    "tldextract",
+    'certbot>=3.0.0',
+    'acme>=3.0.0',
+    'setuptools',
+    'requests',
+    'pytz',
+    'tldextract',
 ]
 
-with open("README.md", encoding="utf-8") as f:
+with open('README.md', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name="certbot-dns-wedos",
+    name='certbot-dns-wedos',
     version=version,
-    description="Wedos DNS Authenticator plugin for Certbot",
+    description='Wedos DNS Authenticator plugin for Certbot',
     long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/clazzor/certbot-dns-wedos",
-    author="Clazzor",
-    license="Apache License 2.0",
-    python_requires=">=3.10",
+    long_description_content_type='text/markdown',
+    url='https://github.com/clazzor/certbot-dns-wedos',
+    author='Clazzor',
+    license='Apache License 2.0',
+    python_requires='>=3.10',
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
-        "Environment :: Plugins",
-        "Intended Audience :: System Administrators",
-        "License :: OSI Approved :: Apache Software License",
-        "Operating System :: POSIX :: Linux",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11",
-        "Programming Language :: Python :: 3.12",
-        "Programming Language :: Python :: 3.13",
-        "Programming Language :: Python :: 3.14",
-        "Topic :: Internet :: WWW/HTTP",
-        "Topic :: Security",
-        "Topic :: System :: Installation/Setup",
-        "Topic :: System :: Networking",
-        "Topic :: System :: Systems Administration",
-        "Topic :: Utilities",
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Plugins',
+        'Intended Audience :: System Administrators',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
+        'Programming Language :: Python :: 3.14',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Security',
+        'Topic :: System :: Installation/Setup',
+        'Topic :: System :: Networking',
+        'Topic :: System :: Systems Administration',
+        'Topic :: Utilities',
     ],
     packages=find_packages(),
     include_package_data=True,
     install_requires=install_requires,
-    entry_points={
-        "certbot.plugins": [
-            "dns-wedos = certbot_dns_wedos.dns_wedos:Authenticator"
+    extras_require={
+        'dev': [
+            'ruff',
         ]
+    },
+    entry_points={
+        'certbot.plugins': ['dns-wedos = certbot_dns_wedos.dns_wedos:Authenticator']
     },
 )
