@@ -2,9 +2,9 @@ target-version = "py310"
 line-length = 88
 indent-width = 4
 exclude = [
-    '.venv',
-    '__pycache__',
-    '.egg-info'
+    ".venv",
+    "__pycache__",
+    ".egg-info"
 ]
 
 [lint]
