@@ -1,5 +1,5 @@
-# CertBot DNS plugin
-This plugin uses [certbot](https://github.com/certbot/certbot)'s [dns-01 challenge](https://letsencrypt.org/docs/challenge-types) to create and delete TXT records on a [Wedos](https://www.wedos.com) domain server, thanks to the API interface called [WAPI](https://kb.wedos.global/wapi/) provided by [Wedos](https://www.wedos.com). With this plugin you can issue [wildcard](https://en.wikipedia.org/wiki/Wildcard_DNS_record) [SSL/TLS](https://letsencrypt.org/docs/faq/#does-let-s-encrypt-issue-wildcard-certificates) certificates. 
+# Certbot DNS plugin
+This plugin uses [certbot](https://github.com/certbot/certbot)'s [dns-01 challenge](https://letsencrypt.org/docs/challenge-types) to create and delete TXT records on a [Wedos](https://www.wedos.com) domain server, thanks to the API interface called [WAPI](https://kb.wedos.global/wapi/) provided by [Wedos](https://www.wedos.com). With this plugin, you can issue [wildcard](https://en.wikipedia.org/wiki/Wildcard_DNS_record) [SSL/TLS](https://letsencrypt.org/docs/faq/#does-let-s-encrypt-issue-wildcard-certificates) certificates. 
 
 ## Installation
 ### Prerequisites
@@ -13,28 +13,28 @@ The following software is required to use this plugin.
 
 ### WAPI
 You will also **need to have WAPI activated** for communication between Wedos and the plugin. To activate WAPI, you can read the article from Wedos, available at this link [WAPI activation and settings](https://kb.wedos.global/wapi-manual/#activate).
-> **CAUTION: Please note that the IP address of the server where Certbot with the plugin will be located must be whitelisted in WAPI, otherwise it will not work.**
+> **CAUTION: Please note that the IP address of the server where running Certbot must be whitelisted in WAPI, otherwise it will not work.**
 
 ### Installation methods
 #### With snap (recommended)
-```commandline
-snap install certbot-dns-wedos
+```bash
+sudo snap install certbot-dns-wedos
 sudo snap set certbot trust-plugin-with-root=ok
 sudo snap connect certbot:plugin certbot-dns-wedos
 ```
 ---
 #### With pip
-```commandline
+```bash
 sudo pip install certbot-dns-wedos
 ```
 ---
 #### From source
-```commandline
+```bash
 git clone https://github.com/clazzor/certbot-dns-wedos.git
 sudo pip install ./certbot-dns-wedos
 ```
 After installation, the cloned repository can be deleted.
-```commandline
+```bash
 rm -r certbot-dns-wedos
 ```
 
@@ -48,7 +48,7 @@ rm -r certbot-dns-wedos
 
 ### Command example
 The basic structure of the command is the same as with all other certbot plugins, we define which plugin to use, propagation-seconds, credentials file and domains, like this:
-```commandline
+```bash
 certbot certonly \
 --authenticator dns-wedos \
 --dns-wedos-propagation-seconds 450 \
@@ -64,7 +64,7 @@ certbot certonly \
 | dns_wedos_ttl  | ❌       | The TTL for the DNS record. (default: 300)   |
 
 This is what the credentials file for the wedos plugin should look like.
-```commandline
+```ini
 dns_wedos_user=user@example.com
 dns_wedos_auth=examplepassword
 ```
@@ -76,7 +76,7 @@ Usually services like haproxy, nginx, apache and more need to reload to retrieve
 The `--deploy-hook` is used for this purpose.
 
 ### Example
-```commandline
+```bash
 certbot certonly \
 --authenticator dns-wedos \
 --dns-wedos-propagation-seconds 450 \
@@ -86,18 +86,18 @@ certbot certonly \
 ```
 
 ### Nginx
-```commandline
+```bash
 --deploy-hook "systemctl reload nginx"
 ```
 
 ### Apache
-```commandline
+```bash
 --deploy-hook "systemctl reload apache2"
 ```
 
 ### HAProxy
 HAProxy requires the certificate and private key to be joined into a single `.pem` file:
-```commandline
+```bash
 --deploy-hook "cat /etc/letsencrypt/live/example.com/fullchain.pem /etc/letsencrypt/live/example.com/privkey.pem > /etc/haproxy/certs/combined.pem && systemctl reload haproxy"
 ```
 
