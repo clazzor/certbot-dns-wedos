@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "certbot-dns-wedos"
+version = "2.5"
+description = "Wedos DNS Authenticator plugin for Certbot"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache License 2.0" }
+authors = [
+    { name = "Clazzor" }
+]
+keywords = [
+    "certbot", 
+    "certbot-dns-plugin", 
+    "certificate", 
+    "letsencrypt", 
+    "wedos", 
+    "wapi", 
+    "wildcard-certificates"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Plugins",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Security",
+    "Topic :: System :: Installation/Setup",
+    "Topic :: System :: Networking",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "certbot>=3.0.0",
+    "acme>=3.0.0",
+    "requests",
+    "pytz",
+    "tldextract",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+]
+
+[project.urls]
+Homepage = "https://github.com/clazzor/certbot-dns-wedos"
+Repository = "https://github.com/clazzor/certbot-dns-wedos"
+Issues = "https://github.com/clazzor/certbot-dns-wedos/issues"
+
+[project.entry-points."certbot.plugins"]
+dns-wedos = "certbot_dns_wedos.dns_wedos:Authenticator"
+
+[tool.setuptools.packages.find]
+include = ["certbot_dns_wedos*"]
