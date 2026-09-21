@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,7 +8,8 @@ version = "2.5"
 description = "Wedos DNS Authenticator plugin for Certbot"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "Apache License 2.0" }
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 authors = [
     { name = "Clazzor" }
 ]
@@ -25,7 +26,6 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Plugins",
     "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: Apache Software License",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
@@ -42,7 +42,7 @@ classifiers = [
 ]
 dependencies = [
     "certbot>=3.0.0",
-    "acme>=3.0.0",
+    "acme",
     "requests",
     "pytz",
     "tldextract",
