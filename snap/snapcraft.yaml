@@ -1,42 +1,46 @@
 name: certbot-dns-wedos
+title: Certbot DNS Wedos
 summary: Wedos DNS Authenticator plugin for Certbot
-description: Wedos DNS Authenticator plugin for Certbot
+description: |
+  This plugin uses the Certbot DNS-01 challenge to create and delete TXT
+  records on the Wedos domain server using the Wedos API called the WAPI. 
+  With this plugin, you can generate wildcard SSL certificates.
 website: https://github.com/clazzor/certbot-dns-wedos
+source-code: https://github.com/clazzor/certbot-dns-wedos
+issues: https://github.com/clazzor/certbot-dns-wedos/issues
+contact: https://github.com/clazzor
 license: Apache-2.0
 base: core24
 grade: stable
 confinement: strict
 adopt-info: certbot-dns-wedos
 
-platforms:
-  amd64:
-  arm64:
-  armhf:
-
 parts:
-  install-dependencies:
-    plugin: nil
-    override-pull: |
-      if [ "$SNAP_ARCH" = "armhf" ]; then
-        apt update
-        apt -y install libffi-dev libssl-dev cargo pkg-config
-      fi
   certbot-dns-wedos:
     plugin: python
     source: .
     override-pull: |
-        snapcraftctl pull
-        snapcraftctl set-version `grep ^version $SNAPCRAFT_PART_SRC/setup.py | cut -f2 -d= | tr -d '"[:space:]'`
+        craftctl default
+        craftctl set version=$(grep ^version $CRAFT_PART_SRC/pyproject.toml | cut -f2 -d= | tr -d '"[:space:]')
     build-environment:
+      - CARGO_NET_GIT_FETCH_WITH_CLI: "true"
       - SNAP_BUILD: "True"
-    after: [install-dependencies]
+    build-packages:
+      - gcc
+      - git
+      - build-essential
+      - libssl-dev
+      - libffi-dev
+      - python3-dev
+      - cargo
+      - pkg-config
   certbot-metadata:
     plugin: dump
     source: .
-    stage: [setup.py, certbot-shared]
+    stage: [pyproject.toml, certbot-shared]
     override-pull: |
-        snapcraftctl pull
-        mkdir -p $SNAPCRAFT_PART_SRC/certbot-shared
+        craftctl default
+        mkdir -p $CRAFT_PART_SRC/certbot-shared
 
 slots:
   certbot:
