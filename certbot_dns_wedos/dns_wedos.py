@@ -52,11 +52,11 @@ class WedosClient:
         self.password = hashlib.sha1(password.encode('utf-8')).hexdigest()
         self.session = requests.Session()
 
-    def _find_txt_id(self, data: dict, validation: str) -> int:
+    def _find_txt_id(self, data: dict, validation: str) -> int | None:
         if 'data' not in data['response']:
-            return -1
+            return None
         if 'row' not in data['response']['data']:
-            return -1
+            return None
         data = data['response']['data']['row']
 
         for record in data:
@@ -66,7 +66,7 @@ class WedosClient:
                 continue
             if record['rdata'] == validation:
                 return int(record['ID'])
-        return -1
+        return None
 
     def _handler_wedos(self, response: requests.Response) -> dict:
         data = {}
@@ -163,7 +163,7 @@ class WedosClient:
         dns_records = self.client_send('dns-rows-list', {'domain': domain})
         txt_id = self._find_txt_id(dns_records, validation)
 
-        if txt_id == -1:
+        if txt_id is None:
             logger.warning(
                 'Could not find the created TXT record. It is recommended to check it.'
             )
