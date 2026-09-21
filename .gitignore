@@ -1,6 +1,7 @@
 build
 *.egg-info
 dist
+*.snap
 
 __pycache__
 *.pyc
