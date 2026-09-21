@@ -20,23 +20,27 @@ jobs:
       url: https://pypi.org/p/certbot-dns-wedos
     permissions:
       id-token: write
+      contents: read
 
     steps:
     - name: Check out the repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: '3.x'
     
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install setuptools wheel
+        python -m pip install build twine
 
     - name: Build package
-      run: python setup.py sdist bdist_wheel
+      run: python -m build
+
+    - name: Verify package with twine
+      run: python -m twine check dist/*
 
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@release/v1
